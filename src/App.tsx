@@ -17,7 +17,7 @@ import {
   X,
   Layers
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { toPng } from 'html-to-image';
@@ -185,11 +185,11 @@ export default function App() {
   const [showOriginal, setShowOriginal] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [cookieConsent, setCookieConsent] = useState(true); // Default true to hide initially
+  const [cookieConsent, setCookieConsent] = useState(true);
   
   const [ocrProgress, setOcrProgress] = useState(0);
 
-  const t = appTranslations[language] || appTranslations.English;
+  const t = useMemo(() => appTranslations[language] || appTranslations.English, [language]);
 
   const resultRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -764,9 +764,14 @@ export default function App() {
       </footer>
 
       {/* Cookie Consent Modal */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {!cookieConsent && (
-          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 sm:p-6 bg-slate-900/40 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 sm:p-6 bg-slate-900/40 backdrop-blur-sm"
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -797,7 +802,7 @@ export default function App() {
                 </div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

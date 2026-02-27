@@ -1,6 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const getAI = () => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export interface DetectedEntity {
   text: string;
@@ -50,6 +50,7 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
   if (!text.trim()) return [];
 
   try {
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Identify all sensitive information in the following text that should be redacted for privacy. 
