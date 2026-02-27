@@ -1,0 +1,5 @@
+{
+  "name": "Redactly",
+  "description": "A smart text redactor and anonymizer to detect and hide sensitive information like names, emails, and phone numbers.",
+  "requestFramePermissions": []
+}
