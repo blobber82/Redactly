@@ -22,6 +22,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { toPng } from 'html-to-image';
 import { createWorker } from 'tesseract.js';
+import { jsPDF } from 'jspdf';
 import { detectSensitiveInfoRegex, detectSensitiveInfoAI, type DetectedEntity } from './services/geminiService';
 
 function cn(...inputs: ClassValue[]) {
@@ -66,7 +67,15 @@ const appTranslations: Record<string, any> = {
     },
     cookieTitle: "Simple Cookies (no “trackers”)",
     cookieContent: "We only use cookies to sync your hearts, brains, and preferences across the Joisst ecosystem. By clicking below, you're cool with this platform-wide synchronisation.",
-    cookieButton: "Cool!"
+    cookieButton: "Cool!",
+    exportCleaned: "Export Cleaned File",
+    downloadTxt: "Download as .txt",
+    exportPdf: "Export Redacted PDF",
+    actions: "Actions",
+    uploadFile: "Upload File",
+    clearAll: "Clear All",
+    downloadOriginal: "Download Original Format",
+    acceptedFormats: "Accepted: .txt, .log, .csv, .json, .jpg, .png",
   },
   Español: {
     sourceText: "Texto Fuente",
@@ -101,7 +110,15 @@ const appTranslations: Record<string, any> = {
     },
     cookieTitle: "Cookies Simples (sin “rastreadores”)",
     cookieContent: "Solo usamos cookies para sincronizar tus corazones, cerebros y preferencias en todo el ecosistema Joisst. Al hacer clic abajo, aceptas esta sincronización en toda la plataforma.",
-    cookieButton: "¡Genial!"
+    cookieButton: "¡Genial!",
+    exportCleaned: "Exportar Archivo Limpio",
+    downloadTxt: "Descargar como .txt",
+    exportPdf: "Exportar PDF Redactado",
+    actions: "Acciones",
+    uploadFile: "Subir Archivo",
+    clearAll: "Limpiar Todo",
+    downloadOriginal: "Descargar Formato Original",
+    acceptedFormats: "Aceptados: .txt, .log, .csv, .json, .jpg, .png",
   },
   Français: {
     sourceText: "Texte Source",
@@ -136,7 +153,15 @@ const appTranslations: Record<string, any> = {
     },
     cookieTitle: "Cookies Simples (pas de “traceurs”)",
     cookieContent: "Nous utilisons uniquement des cookies pour synchroniser vos cœurs, vos cerveaux et vos préférences dans l'écosystème Joisst. En cliquant ci-dessous, vous acceptez cette synchronisation sur toute la plateforme.",
-    cookieButton: "Cool !"
+    cookieButton: "Cool !",
+    exportCleaned: "Exporter le Fichier Nettoyé",
+    downloadTxt: "Télécharger en .txt",
+    exportPdf: "Exporter en PDF Rédigé",
+    actions: "Actions",
+    uploadFile: "Téléverser",
+    clearAll: "Tout Effacer",
+    downloadOriginal: "Télécharger Format Original",
+    acceptedFormats: "Acceptés : .txt, .log, .csv, .json, .jpg, .png",
   },
   Deutsch: {
     sourceText: "Quelltext",
@@ -171,7 +196,15 @@ const appTranslations: Record<string, any> = {
     },
     cookieTitle: "Einfache Cookies (keine „Tracker“)",
     cookieContent: "Wir verwenden Cookies nur, um Ihre Herzen, Gehirne und Einstellungen im gesamten Joisst-Ökosystem zu synchronisieren. Mit einem Klick auf die Schaltfläche unten erklären Sie sich mit dieser plattformweiten Synchronisierung einverstanden.",
-    cookieButton: "Cool!"
+    cookieButton: "Cool!",
+    exportCleaned: "Bereinigte Datei exportieren",
+    downloadTxt: "Als .txt herunterladen",
+    exportPdf: "Geschwärztes PDF exportieren",
+    actions: "Aktionen",
+    uploadFile: "Datei hochladen",
+    clearAll: "Alles löschen",
+    downloadOriginal: "Originalformat herunterladen",
+    acceptedFormats: "Akzeptiert: .txt, .log, .csv, .json, .jpg, .png",
   }
 };
 
@@ -186,6 +219,9 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cookieConsent, setCookieConsent] = useState(true);
+  const [showActionsMenu, setShowActionsMenu] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<{ name: string; type: string } | null>(null);
+  const [user, setUser] = useState<any>(null);
   
   const [ocrProgress, setOcrProgress] = useState(0);
 
@@ -194,27 +230,61 @@ export default function App() {
   const resultRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Joisst Cookie Handshake
+  // Joisst SSO Handshake
   useEffect(() => {
-    const checkConsent = async () => {
+    const checkAuth = async () => {
       try {
-        const res = await fetch('https://api.joisst.com/api/user', { credentials: 'include' });
+        const ref = new URLSearchParams(window.location.search).get('ref');
+        const res = await fetch(`https://api.joisst.com/api/auth?action=me${ref ? '&ref='+ref : ''}`, {
+          credentials: 'include',
+          cache: 'no-store'
+        });
+        
+        if (res.status === 401) {
+          window.location.href = 'https://api.joisst.com/login';
+          return;
+        }
+
         if (res.ok) {
-          const user = await res.json();
-          setCookieConsent(!!user.cookieConsent);
+          const userData = await res.json();
+          setUser(userData);
+          setCookieConsent(!!userData.cookieConsent);
         } else {
           setCookieConsent(false);
         }
       } catch (err) {
-        console.error("Handshake failed:", err);
+        console.error("Auth handshake failed:", err);
         setCookieConsent(false);
       }
     };
     
-    // Delay handshake slightly to ensure initial render is smooth
-    const timer = setTimeout(checkConsent, 1000);
+    const timer = setTimeout(checkAuth, 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  const spendHeart = async () => {
+    try {
+      const res = await fetch('https://api.joisst.com/api/hearts?action=spend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ amount: 1 })
+      });
+
+      if (res.status === 401) {
+        window.location.href = 'https://api.joisst.com/login';
+        return false;
+      }
+      if (res.status === 400) {
+        window.location.href = 'https://api.joisst.com/hearts';
+        return false;
+      }
+      return res.ok;
+    } catch (err) {
+      console.error("Failed to spend heart:", err);
+      return false;
+    }
+  };
 
   const acceptCookies = async () => {
     try {
@@ -270,6 +340,10 @@ export default function App() {
 
   const handleAiScan = async () => {
     if (!inputText.trim()) return;
+    
+    const success = await spendHeart();
+    if (!success) return;
+
     setIsAiAnalyzing(true);
     setError(null);
     try {
@@ -295,6 +369,7 @@ export default function App() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setUploadedFile({ name: file.name, type: file.type });
     const isImage = file.type.startsWith('image/');
     const reader = new FileReader();
 
@@ -393,11 +468,51 @@ export default function App() {
     }
   };
 
+  const handleDownloadTxt = () => {
+    const blob = new Blob([redactedText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const fileName = uploadedFile ? `redacted-${uploadedFile.name.split('.')[0]}.txt` : `redacted-${Date.now()}.txt`;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadOriginalFormat = () => {
+    if (!uploadedFile) return;
+    
+    // If it was an image, we can't really "download in original format" as text
+    // unless we mean the text extracted from it. We'll default to .txt for images
+    // or the original extension for text-based files.
+    const isImage = uploadedFile.type.startsWith('image/');
+    const mimeType = isImage ? 'text/plain' : uploadedFile.type;
+    const extension = isImage ? 'txt' : uploadedFile.name.split('.').pop();
+    
+    const blob = new Blob([redactedText], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `redacted-${uploadedFile.name.split('.')[0]}.${extension}`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportPdf = () => {
+    const doc = new jsPDF();
+    const margin = 10;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const splitText = doc.splitTextToSize(redactedText, pageWidth - margin * 2);
+    doc.text(splitText, margin, 20);
+    doc.save(`redacted-${Date.now()}.pdf`);
+  };
+
   const clearAll = () => {
     setInputText('');
     setEntities([]);
     setRedactionState({});
     setError(null);
+    setUploadedFile(null);
   };
 
   const getEntityColor = (type: string) => {
@@ -512,6 +627,7 @@ export default function App() {
         onClear={clearAll} 
         language={language}
         onLanguageChange={setLanguage}
+        user={user}
       />
 
       <input 
@@ -533,13 +649,44 @@ export default function App() {
                   <FileText className="w-4 h-4 text-slate-400" />
                   <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">{t.sourceText}</h2>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                    <Check className="w-3 h-3" />
-                    {t.regexActive}
+                <div className="flex items-center gap-3">
+                  <div className="relative group">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all text-xs font-bold"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      {t.uploadFile}
+                    </button>
+                    {/* Tooltip */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1.5 bg-slate-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-xl">
+                      {t.acceptedFormats}
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-slate-900" />
+                    </div>
                   </div>
-                  <div className="text-[11px] font-mono text-slate-400">
-                    {inputText.length} {t.characters}
+
+                  <button
+                    onClick={clearAll}
+                    disabled={!inputText}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all text-xs font-bold",
+                      !inputText 
+                        ? "bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed" 
+                        : "bg-white border-slate-200 text-rose-600 hover:border-rose-600 hover:bg-rose-50"
+                    )}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {t.clearAll}
+                  </button>
+
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                      <Check className="w-3 h-3" />
+                      {t.regexActive}
+                    </div>
+                    <div className="text-[11px] font-mono text-slate-400">
+                      {inputText.length} {t.characters}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -691,30 +838,52 @@ export default function App() {
             </div>
 
             {/* Output Preview */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[350px]">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[450px]">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-slate-400" />
                   <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">{t.redactedPreview}</h2>
                 </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleCopy}
-                    className={cn(
-                      "flex items-center gap-1.5 text-xs font-bold transition-colors",
-                      copied ? "text-emerald-600" : "text-indigo-600 hover:text-indigo-700"
-                    )}
-                  >
-                    {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    {copied ? t.copied : t.copy}
-                  </button>
-                  <button
-                    onClick={handleDownloadImage}
-                    className="text-slate-400 hover:text-slate-600 transition-colors"
-                    title={t.downloadImage}
-                  >
-                    <Download className="w-4 h-4" />
-                  </button>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <button 
+                      onClick={() => setShowActionsMenu(!showActionsMenu)}
+                      className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-500"
+                      title={t.actions}
+                    >
+                      <Layers className="w-4 h-4" />
+                    </button>
+                    <AnimatePresence>
+                      {showActionsMenu && (
+                        <>
+                          <div className="fixed inset-0 z-40" onClick={() => setShowActionsMenu(false)} />
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-slate-200 shadow-xl z-50 overflow-hidden"
+                          >
+                            <div className="p-1">
+                              {uploadedFile && !uploadedFile.type.startsWith('image/') && (
+                                <button onClick={() => { handleDownloadOriginalFormat(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-indigo-600 font-bold hover:bg-indigo-50 rounded-lg transition-colors">
+                                  <RefreshCw className="w-4 h-4" /> {t.downloadOriginal}
+                                </button>
+                              )}
+                              <button onClick={() => { handleDownloadTxt(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                                <FileText className="w-4 h-4" /> {t.downloadTxt}
+                              </button>
+                              <button onClick={() => { handleExportPdf(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                                <Download className="w-4 h-4" /> {t.exportPdf}
+                              </button>
+                              <button onClick={() => { handleDownloadImage(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                                <Eye className="w-4 h-4" /> {t.downloadImage}
+                              </button>
+                            </div>
+                          </motion.div>
+                        </>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
 
@@ -732,6 +901,21 @@ export default function App() {
                     <p className="text-sm italic">{t.previewPlaceholder}</p>
                   </div>
                 )}
+              </div>
+
+              {/* Primary Actions */}
+              <div className="p-4 bg-slate-50 border-t border-slate-100">
+                <button
+                  onClick={handleCopy}
+                  disabled={!inputText}
+                  className={cn(
+                    "w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-base transition-all shadow-sm",
+                    !inputText ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95"
+                  )}
+                >
+                  {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                  {copied ? t.copied : t.copy}
+                </button>
               </div>
             </div>
           </div>

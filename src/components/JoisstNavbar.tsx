@@ -26,6 +26,7 @@ interface JoisstNavbarProps {
   onUpload?: () => void;
   language: string;
   onLanguageChange: (lang: string) => void;
+  user?: any;
 }
 
 const translations: Record<string, any> = {
@@ -87,7 +88,7 @@ const DEFlag = () => (
   </svg>
 );
 
-export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onUpload, language, onLanguageChange }) => {
+export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onUpload, language, onLanguageChange, user }) => {
   const [isPwaActive, setIsPwaActive] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
@@ -188,8 +189,8 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
           <div className="flex items-center gap-1 sm:gap-3">
             {/* Currency - Hidden on mobile (<640px) */}
             <div className="hidden sm:flex items-center gap-2">
-              <CurrencyButton icon={Heart} value="1.2K" color="#F43E5D" />
-              <CurrencyButton icon={Zap} value="450" color="#7C3AED" />
+              <CurrencyButton icon={Heart} value={user?.hearts?.toString() || "0"} color="#F43E5D" />
+              <CurrencyButton icon={Zap} value={user?.brains?.toString() || "0"} color="#7C3AED" />
             </div>
 
             {/* Language */}
