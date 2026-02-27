@@ -54,14 +54,16 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Identify all sensitive information in the following text that should be redacted for privacy. 
+      You MUST return a JSON array of objects. Each object must have "text" (the exact string from the source) and "type" (one of the allowed categories).
+      
       Look for:
-      - Full Names
-      - Email Addresses
-      - Phone Numbers
-      - Physical Addresses
-      - IP Addresses
-      - Credit Card Numbers or Financial IDs
-      - Any other personally identifiable information (PII)
+      - Full Names (NAME)
+      - Email Addresses (EMAIL)
+      - Phone Numbers (PHONE)
+      - Physical Addresses (ADDRESS)
+      - IP Addresses (IP_ADDRESS)
+      - Credit Card Numbers or Financial IDs (CREDIT_CARD)
+      - Any other personally identifiable information (OTHER)
 
       Text to analyze:
       """

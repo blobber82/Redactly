@@ -88,6 +88,12 @@ const DEFlag = () => (
   </svg>
 );
 
+const BrainIcon = () => (
+  <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 sm:w-7 sm:h-7">
+    <path d="m491.9 288.1c48.1-57 2.4-117.4-63.7-177.5-7.8 27.4-29.8 48.4-57.5 55-5.2-.1-9.4-4.3-9.4-9.6 0-4.1 2.7-7.7 6.6-8.9 23.1-7 40.2-26.4 44.3-50.1-25.6-22-55.3-38.6-87.4-49.1-27.7 24.3-58.2 61.8-31.9 113.3 2.4 4.6.7 10.3-4 12.8-4.5 2.4-10.1.7-12.6-3.7-28.9-56.1-2.7-97 26.8-128.2-60.8-11.6-123.8-1.4-177.9 28.7 22.4 1.2 43.5 11.1 58.8 27.5 3.8 3.6 3.9 9.6.2 13.4-3.6 3.8-9.6 3.9-13.4.2 0 0-.1-.1-.1-.1-37.7-40.2-94.2-20.6-117.1 24.2-30.5 54.7-5.9 84.6 33.9 91.8 5.2.7 8.8 5.5 8 10.7-.7 5.1-5.5 8.7-10.6 8-1.7-.2-41.6-6.1-57.6-37.4-1.4-2.7-2.6-5.5-3.5-8.4-33.4 42.3-31.2 75.3 5.5 113.8 10.2 11.4 25.8 16.3 40.6 12.6 29.8-7.5 70.1-24.2 78.4-45.7 7.6-18.9-8.8-20.8 3.6-31.5 16.2-7.3 21.3 20.4 14.2 38.1-6.5 18.3-31.7 36-53.9 44.6 5.1 16.1 15.9 29.7 30.3 38.5 30 18.6 70.1 14.8 87.1 10.2 4.6-1.3 9.6-.2 13.3 2.9 11.3 9.7 24.7 16.5 39.2 19.9 6.2 1.1 11.7 4.5 15.4 9.6l39.5 56.7c1.8 2.5 4.7 4.1 7.8 4.1h33.1c5.2 0 9.5-4.2 9.5-9.5v-38.6c79.3-18.8 131.1-56.1 102.8-127.2-1.8-3.7-1.1-8.1 1.7-11.1zm-91.9-64.5 38.6-8.8c5.1-1.1 10.2 2.2 11.2 7.3 1.1 5-2 9.9-7 11.2l-38.6 8.8c-.7.2-1.4.2-2.1.2-5.2-.1-9.4-4.3-9.4-9.6.1-4.4 3.1-8.1 7.3-9.1zm-73.5 49.4c10-18.4 19.8-58.1-10-70.6-4.7-2.3-6.7-8-4.4-12.7 11.8-17.8 39.8 16.5 41.2 28.4 6.7 23.3-3.1 49.5-9.6 62.8 21.3 14.7 36.8 36.2 44.2 60.9 1.8 4.9-.8 10.4-5.7 12.2s-10.4-.8-12.2-5.7v-.1c-24.7-74.3-84.8-67.3-122.4-44.7-4.5 2.7-10.3 1.3-13.1-3.2-2.6-4.3-1.3-10 2.8-12.8 2-1.1 45.9-28.6 89.2-14.5zm-169.6-75.4c-9.5-1-39.1-.9-34.7-17.5 1.7-4.9 7.1-7.5 12-5.8 24.3 11.3 53.1.7 64.4-23.6 1.1-2.5 2.1-5 2.8-7.7 1.7-5 7.1-7.7 12-6 4.8 1.6 7.5 6.6 6.2 11.5-3.4 10.1-8.8 19.4-15.7 27.5 2.1 9.2 7.1 17.4 14.3 23.4 8.3 5.6 18.5 7.6 28.2 5.3 5.2-.8 10 2.7 10.9 7.8.8 5.2-2.7 10-7.9 10.9-26.1 5.4-52.3-9.2-61.2-34.4-9.3 5.8-20.2 8.8-31.3 8.6z" fill="#7C3AED"/>
+  </svg>
+);
+
 export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onUpload, language, onLanguageChange, user }) => {
   const [isPwaActive, setIsPwaActive] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -142,7 +148,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
     </button>
   );
 
-  const CurrencyButton = ({ icon: Icon, value, color }: { icon: any, value: string, color: string }) => (
+  const CurrencyButton = ({ icon: Icon, value, color, customIcon }: { icon?: any, value: string, color: string, customIcon?: React.ReactNode }) => (
     <div
       className={cn(
         "group flex items-center gap-2 px-5 rounded-xl border border-slate-200 transition-all duration-200",
@@ -150,7 +156,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
         "hover:border-[#d90168]"
       )}
     >
-      <Icon className="w-5 h-5 sm:w-7 sm:h-7 transition-colors duration-200" style={{ color }} />
+      {customIcon ? customIcon : <Icon className="w-5 h-5 sm:w-7 sm:h-7 transition-colors duration-200" style={{ color }} />}
       <span className="font-black uppercase tracking-tighter text-sm sm:text-base transition-colors duration-200" style={{ color }}>
         {value}
       </span>
@@ -187,13 +193,17 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
 
           {/* Right Cluster */}
           <div className="flex items-center gap-1 sm:gap-3">
-            {/* Currency - Hidden on mobile (<640px) */}
-            <div className="hidden sm:flex items-center gap-2">
+            {/* 1. Heart Counter */}
+            <div className="hidden sm:flex items-center">
               <CurrencyButton icon={Heart} value={user?.hearts?.toString() || "0"} color="#F43E5D" />
-              <CurrencyButton icon={Zap} value={user?.brains?.toString() || "0"} color="#7C3AED" />
             </div>
 
-            {/* Language */}
+            {/* 2. Brain Counter */}
+            <div className="hidden sm:flex items-center">
+              <CurrencyButton value={user?.brains?.toString() || "0"} color="#7C3AED" customIcon={<BrainIcon />} />
+            </div>
+
+            {/* 3. Language selector */}
             <div className="relative">
               <button
                 onClick={() => setShowLangMenu(!showLangMenu)}
@@ -226,26 +236,28 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
               </AnimatePresence>
             </div>
 
-            {/* Utilities - Hidden on mobile (<640px) */}
-            <div className="hidden sm:flex items-center gap-1 sm:gap-2">
-              <UtilityBox onClick={() => setIsDarkMode(!isDarkMode)}>
-                {isDarkMode ? <Sun className="w-5 h-5 sm:w-7 sm:h-7" /> : <Moon className="w-5 h-5 sm:w-7 sm:h-7" />}
-              </UtilityBox>
-              <UtilityBox onClick={onUpload}>
-                <PlusCircle className="w-5 h-5 sm:w-7 sm:h-7" />
-              </UtilityBox>
-              <UtilityBox onClick={onClear}>
-                <Trash2 className="w-5 h-5 sm:w-7 sm:h-7" />
-              </UtilityBox>
-              <UtilityBox>
-                <Settings className="w-5 h-5 sm:w-7 sm:h-7" />
-              </UtilityBox>
-            </div>
+            {/* 4. Light/Dark mode toggle */}
+            <UtilityBox onClick={() => setIsDarkMode(!isDarkMode)}>
+              {isDarkMode ? <Sun className="w-5 h-5 sm:w-7 sm:h-7" /> : <Moon className="w-5 h-5 sm:w-7 sm:h-7" />}
+            </UtilityBox>
 
-            {/* Profile */}
-            <button className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-slate-100 overflow-hidden">
+            {/* 5. Settings (cog icon) */}
+            <UtilityBox>
+              <Settings className="w-5 h-5 sm:w-7 sm:h-7" />
+            </UtilityBox>
+
+            {/* 6. Login/Logout icon */}
+            <UtilityBox onClick={() => window.location.href = 'https://api.joisst.com/login'}>
+              <LogOut className="w-5 h-5 sm:w-7 sm:h-7" />
+            </UtilityBox>
+
+            {/* 7. Profile icon */}
+            <a 
+              href="https://api.joisst.com/dashboard"
+              className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-slate-100 overflow-hidden"
+            >
               <UserIcon className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 group-hover:text-[#d90168] transition-colors" />
-            </button>
+            </a>
           </div>
         </div>
 

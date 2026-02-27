@@ -76,6 +76,7 @@ const appTranslations: Record<string, any> = {
     clearAll: "Clear All",
     downloadOriginal: "Download Original Format",
     acceptedFormats: "Accepted: .txt, .log, .csv, .json, .jpg, .png",
+    costsOneBrain: "Costs 1 brain",
   },
   Español: {
     sourceText: "Texto Fuente",
@@ -119,6 +120,7 @@ const appTranslations: Record<string, any> = {
     clearAll: "Limpiar Todo",
     downloadOriginal: "Descargar Formato Original",
     acceptedFormats: "Aceptados: .txt, .log, .csv, .json, .jpg, .png",
+    costsOneBrain: "Cuesta 1 cerebro",
   },
   Français: {
     sourceText: "Texte Source",
@@ -162,6 +164,7 @@ const appTranslations: Record<string, any> = {
     clearAll: "Tout Effacer",
     downloadOriginal: "Télécharger Format Original",
     acceptedFormats: "Acceptés : .txt, .log, .csv, .json, .jpg, .png",
+    costsOneBrain: "Coûte 1 cerveau",
   },
   Deutsch: {
     sourceText: "Quelltext",
@@ -205,6 +208,7 @@ const appTranslations: Record<string, any> = {
     clearAll: "Alles löschen",
     downloadOriginal: "Originalformat herunterladen",
     acceptedFormats: "Akzeptiert: .txt, .log, .csv, .json, .jpg, .png",
+    costsOneBrain: "Kostet 1 Gehirn",
   }
 };
 
@@ -262,9 +266,9 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  const spendHeart = async () => {
+  const spendBrain = async () => {
     try {
-      const res = await fetch('https://api.joisst.com/api/hearts?action=spend', {
+      const res = await fetch('https://api.joisst.com/api/brains?action=spend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -279,9 +283,15 @@ export default function App() {
         window.location.href = 'https://api.joisst.com/hearts';
         return false;
       }
-      return res.ok;
+      
+      if (res.ok) {
+        // Optimistic update
+        setUser((prev: any) => prev ? { ...prev, brains: Math.max(0, (prev.brains || 0) - 1) } : prev);
+        return true;
+      }
+      return false;
     } catch (err) {
-      console.error("Failed to spend heart:", err);
+      console.error("Failed to spend brain:", err);
       return false;
     }
   };
@@ -341,13 +351,16 @@ export default function App() {
   const handleAiScan = async () => {
     if (!inputText.trim()) return;
     
-    const success = await spendHeart();
+    const success = await spendBrain();
     if (!success) return;
 
     setIsAiAnalyzing(true);
     setError(null);
     try {
       const aiDetected = await detectSensitiveInfoAI(inputText);
+      if (aiDetected.length === 0) {
+        setError('AI Scan complete: No additional sensitive entities detected.');
+      }
       setEntities(prev => {
         const regexEntities = prev.filter(e => e.source === 'REGEX');
         const combined = [...regexEntities];
@@ -639,6 +652,39 @@ export default function App() {
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* App Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-200">
+            <svg enable-background="new 0 0 492 492" viewBox="0 0 492 492" xmlns="http://www.w3.org/2000/svg">
+              <g clip-rule="evenodd" fill-rule="evenodd">
+                <path d="m0 0h492v492h-492z" fill="#e8baba"/>
+                <path d="m347.1 342-38.3 39.8-8.9-54.5z" fill="#66737c"/>
+                <path d="m412.4 132.7-64.7 207.5-.6 1.8-47.1-14.7 47.7-152.9 17.6-56.3z" fill="#f2ae96"/>
+                <path d="m418.3 82.8c4.9 1.5 7.6 6.7 6.1 11.6l-12 38.4-47.1-14.8 12-38.4c1.5-4.9 6.7-7.6 11.6-6.1z" fill="#9e66aa"/>
+                <path d="m347.7 340.2v74.2c0 3.3-2.7 5.9-5.9 5.9h-268.2c-3.3 0-5.9-2.7-5.9-5.9v-335.3c0-3.3 2.7-5.9 5.9-5.9h268.1c3.3 0 5.9 2.7 5.9 5.9v95.2l-47.6 153 8.9 54.5 38.3-39.8z" fill="#e1e5e8"/>
+                <g fill="#333">
+                  <path d="m308.8 387.5c-.6 0-1.2-.1-1.7-.3-2.1-.6-3.6-2.4-4-4.6l-8.9-54.5c-.1-.9-.1-1.8.2-2.6l77.3-247.6c1.2-3.8 3.8-6.9 7.3-8.8s7.6-2.2 11.4-1l29.6 9.2c7.9 2.5 12.3 10.9 9.8 18.8l-77.3 247.6c-.3.9-.7 1.6-1.3 2.3l-38.2 39.8c-1.1 1.1-2.6 1.7-4.2 1.7zm-2.9-59.8 6.8 41.8 29.3-30.5 76.9-246.3c.6-1.8-.5-3.8-2.3-4.3l-29.6-9.2c-.9-.3-1.8-.2-2.6.2s-1.4 1.2-1.7 2z"/>
+                  <path d="m412.4 138.5c-.6 0-1.1-.1-1.7-.3l-47.2-14.7c-3-.9-4.7-4.2-3.8-7.2s4.2-4.7 7.2-3.8l47.2 14.7c3 .9 4.7 4.2 3.8 7.2-.7 2.5-3 4.1-5.5 4.1z"/>
+                  <path d="m347.1 347.7c-.6 0-1.1-.1-1.7-.3l-47.2-14.7c-3-.9-4.7-4.2-3.8-7.2s4.2-4.7 7.2-3.8l47.2 14.7c3 .9 4.7 4.2 3.8 7.2-.8 2.6-3 4.1-5.5 4.1z"/>
+                  <path d="m300 119h-184.6c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h184.6c3.2 0 5.8 2.6 5.8 5.8s-2.7 5.8-5.8 5.8z"/>
+                  <path d="m300 157.1h-184.6c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h184.6c3.2 0 5.8 2.6 5.8 5.8s-2.7 5.8-5.8 5.8z"/>
+                  <path d="m297.6 195.3h-182.2c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h182.1c3.2 0 5.8 2.6 5.8 5.8s-2.6 5.8-5.7 5.8z"/>
+                  <path d="m288 233.4h-172.6c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h172.6c3.2 0 5.8 2.6 5.8 5.8-.1 3.2-2.7 5.8-5.8 5.8z"/>
+                  <path d="m278.4 271.6h-163c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h162.9c3.2 0 5.8 2.6 5.8 5.8s-2.6 5.8-5.7 5.8z"/>
+                  <path d="m265.8 309.7h-150.4c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h150.4c3.2 0 5.8 2.6 5.8 5.8-.1 3.3-2.6 5.8-5.8 5.8z"/>
+                  <path d="m251.7 347.9h-136.3c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h136.3c3.2 0 5.8 2.6 5.8 5.8-.1 3.2-2.6 5.8-5.8 5.8z"/>
+                  <path d="m266.4 386h-151c-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8h150.9c3.2 0 5.8 2.6 5.8 5.8s-2.6 5.8-5.7 5.8z"/>
+                  <path d="m341.7 426.1h-268.1c-6.5 0-11.7-5.2-11.7-11.7v-335.3c0-6.5 5.2-11.7 11.7-11.7h268.1c6.5 0 11.7 5.2 11.7 11.7v95.2c0 3.2-2.6 5.8-5.8 5.8s-5.8-2.6-5.8-5.8v-95.2c0-.1-.1-.2-.2-.2h-268c-.1 0-.2.1-.2.2v335.3c0 .1.1.2.2.2h268.1c.1 0 .2-.1.2-.2v-74.2c0-3.2 2.6-5.8 5.8-5.8s5.8 2.6 5.8 5.8v74.2c-.1 6.4-5.3 11.7-11.8 11.7z"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Redactly</h1>
+            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Professional Redaction Tool</p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left Column: Input */}
@@ -713,8 +759,13 @@ export default function App() {
               </div>
               
               <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
-                <div className="text-sm text-slate-400 max-w-[300px]">
-                  {t.regexInfo}
+                <div className="flex flex-col">
+                  <div className="text-sm text-slate-400 max-w-[300px]">
+                    {t.regexInfo}
+                  </div>
+                  <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mt-1">
+                    {t.costsOneBrain}
+                  </div>
                 </div>
                 <button
                   onClick={handleAiScan}
