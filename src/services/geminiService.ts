@@ -27,6 +27,10 @@ export function detectSensitiveInfoRegex(text: string): DetectedEntity[] {
     const regex = PATTERNS[type];
     let match;
     while ((match = regex.exec(text)) !== null) {
+      if (!match[0]) {
+        if (regex.lastIndex === match.index) regex.lastIndex++;
+        continue;
+      }
       // Avoid duplicates
       if (!entities.some(e => e.text === match![0])) {
         entities.push({

@@ -17,7 +17,7 @@ import {
   X,
   Layers
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { toPng } from 'html-to-image';
@@ -203,7 +203,6 @@ export default function App() {
           const user = await res.json();
           setCookieConsent(!!user.cookieConsent);
         } else {
-          // If API fails or user not logged in, we might still want to show it if we don't know
           setCookieConsent(false);
         }
       } catch (err) {
@@ -211,7 +210,10 @@ export default function App() {
         setCookieConsent(false);
       }
     };
-    checkConsent();
+    
+    // Delay handshake slightly to ensure initial render is smooth
+    const timer = setTimeout(checkConsent, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   const acceptCookies = async () => {
@@ -225,7 +227,6 @@ export default function App() {
       setCookieConsent(true);
     } catch (err) {
       console.error("Failed to update consent:", err);
-      // Still hide it for UX if they clicked it
       setCookieConsent(true);
     }
   };
@@ -435,6 +436,7 @@ export default function App() {
     ];
 
     sortedEntities.forEach(entity => {
+      if (!entity.text) return;
       const newParts: typeof parts = [];
       parts.forEach(part => {
         if (part.entity) {
