@@ -52,18 +52,23 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: `Identify all sensitive information in the following text that should be redacted for privacy. 
-      You MUST return a JSON array of objects. Each object must have "text" (the exact string from the source) and "type" (one of the allowed categories).
-      
-      Look for:
-      - Full Names (NAME)
-      - Email Addresses (EMAIL)
-      - Phone Numbers (PHONE)
-      - Physical Addresses (ADDRESS)
-      - IP Addresses (IP_ADDRESS)
-      - Credit Card Numbers or Financial IDs (CREDIT_CARD)
-      - Any other personally identifiable information (OTHER)
+      model: "gemini-3.1-pro-preview",
+      contents: `You are a professional privacy and data protection officer. Your task is to identify ALL sensitive information in the provided text that must be redacted to ensure complete anonymity.
+
+      STRICT RULES:
+      1. Identify EVERY person's name (NAME). This includes first names, last names, and initials.
+      2. Identify all contact info: EMAIL, PHONE, ADDRESS.
+      3. Identify technical identifiers: IP_ADDRESS.
+      4. Identify financial info: CREDIT_CARD.
+      5. Identify OTHER sensitive context: Company names, specific project names, birth dates, or any unique identifiers that could lead to de-anonymization.
+      6. The "text" field MUST be the EXACT character-for-character substring from the source text.
+      7. Return ONLY a valid JSON array of objects.
+
+      Example Output Format:
+      [
+        {"text": "John Doe", "type": "NAME", "reason": "Full name of an individual"},
+        {"text": "123 Main St", "type": "ADDRESS", "reason": "Physical location"}
+      ]
 
       Text to analyze:
       """
@@ -78,7 +83,7 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
             properties: {
               text: {
                 type: Type.STRING,
-                description: "The exact text found in the source that is sensitive.",
+                description: "The EXACT substring from the source text.",
               },
               type: {
                 type: Type.STRING,

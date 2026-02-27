@@ -226,6 +226,7 @@ export default function App() {
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<{ name: string; type: string } | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
   
   const [ocrProgress, setOcrProgress] = useState(0);
 
@@ -239,6 +240,8 @@ export default function App() {
     const checkAuth = async () => {
       try {
         const ref = new URLSearchParams(window.location.search).get('ref');
+        if (ref) setReferralCode(ref);
+        
         const res = await fetch(`https://api.joisst.com/api/auth?action=me${ref ? '&ref='+ref : ''}`, {
           credentials: 'include',
           cache: 'no-store'
@@ -641,6 +644,7 @@ export default function App() {
         language={language}
         onLanguageChange={setLanguage}
         user={user}
+        referralCode={referralCode}
       />
 
       <input 
@@ -774,7 +778,8 @@ export default function App() {
                     "px-6 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all shadow-sm",
                     isAiAnalyzing || !inputText.trim() 
                       ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
-                      : "bg-[#7C3AED] text-white hover:bg-[#6D28D9] active:scale-95"
+                      : "bg-[#7C3AED] text-white hover:bg-[#6D28D9] active:scale-95",
+                    isAiAnalyzing && "animate-pulse"
                   )}
                 >
                   {isAiAnalyzing ? (

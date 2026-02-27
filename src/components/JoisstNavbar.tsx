@@ -27,6 +27,7 @@ interface JoisstNavbarProps {
   language: string;
   onLanguageChange: (lang: string) => void;
   user?: any;
+  referralCode?: string | null;
 }
 
 const translations: Record<string, any> = {
@@ -94,7 +95,7 @@ const BrainIcon = () => (
   </svg>
 );
 
-export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onUpload, language, onLanguageChange, user }) => {
+export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onUpload, language, onLanguageChange, user, referralCode }) => {
   const [isPwaActive, setIsPwaActive] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
@@ -124,12 +125,18 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
 
+  const appendRef = (url: string) => {
+    if (!referralCode) return url;
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}ref=${referralCode}`;
+  };
+
   const returnUrl = useMemo(() => {
-    if (typeof document !== 'undefined' && document.referrer.includes('joisst.com')) {
-      return document.referrer;
-    }
-    return 'https://joisst.com';
-  }, []);
+    const base = (typeof document !== 'undefined' && document.referrer.includes('joisst.com')) 
+      ? document.referrer 
+      : 'https://joisst.com';
+    return appendRef(base);
+  }, [referralCode]);
 
   const UtilityBox = ({ children, onClick, className }: { children: React.ReactNode, onClick?: () => void, className?: string }) => (
     <button
@@ -183,7 +190,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             <div className="hidden md:flex items-center gap-2">
               <ArrowLeft className="w-4 h-4 text-slate-900 dark:text-white" />
               <a 
-                href="https://joisst.com"
+                href={appendRef("https://joisst.com")}
                 className="font-black text-sm uppercase tracking-[0.15em] text-slate-900 dark:text-white hover:text-[#d90168] transition-colors"
               >
                 {t.moreApps}
@@ -242,18 +249,18 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             </UtilityBox>
 
             {/* 5. Settings (cog icon) */}
-            <UtilityBox>
+            <UtilityBox onClick={() => window.location.href = appendRef('https://elemental.joisst.com/management#/en/management')}>
               <Settings className="w-5 h-5 sm:w-7 sm:h-7" />
             </UtilityBox>
 
             {/* 6. Login/Logout icon */}
-            <UtilityBox onClick={() => window.location.href = 'https://api.joisst.com/login'}>
+            <UtilityBox onClick={() => window.location.href = appendRef('https://api.joisst.com/login')}>
               <LogOut className="w-5 h-5 sm:w-7 sm:h-7" />
             </UtilityBox>
 
             {/* 7. Profile icon */}
             <a 
-              href="https://api.joisst.com/dashboard"
+              href={appendRef("https://api.joisst.com/dashboard")}
               className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-slate-100 overflow-hidden"
             >
               <UserIcon className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 group-hover:text-[#d90168] transition-colors" />
