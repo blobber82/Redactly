@@ -377,12 +377,17 @@ export default function App() {
   const handleAiScan = async () => {
     if (!inputText.trim()) return;
     
-    const success = await spendBrain();
-    if (!success) return;
-
     setIsAiAnalyzing(true);
     setError(null);
+    
     try {
+      const success = await spendBrain();
+      if (!success) {
+        setError('Insufficient Brains. Please log in or get more brains.');
+        setIsAiAnalyzing(false);
+        return;
+      }
+
       const aiDetected = await detectSensitiveInfoAI(inputText);
       console.log("AI Detected Entities:", aiDetected);
       if (aiDetected.length === 0) {
@@ -661,8 +666,9 @@ export default function App() {
   };
 
   return (
-    <div className={cn("min-h-screen transition-colors duration-300 font-sans selection:bg-indigo-100", isDarkMode ? "bg-slate-950 text-white" : "bg-[#F8F9FA] text-slate-900")}>
-      <JoisstNavbar 
+    <div className={cn("min-h-screen transition-colors duration-300 font-sans selection:bg-indigo-100", isDarkMode && "dark")}>
+      <div className={cn("min-h-screen", isDarkMode ? "bg-slate-950 text-white" : "bg-[#F8F9FA] text-slate-900")}>
+        <JoisstNavbar 
         onUpload={() => fileInputRef.current?.click()} 
         onClear={clearAll} 
         language={language}
@@ -802,15 +808,16 @@ export default function App() {
                   disabled={isAiAnalyzing || !inputText.trim()}
                   className={cn(
                     "px-6 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all shadow-sm",
-                    isAiAnalyzing || !inputText.trim() 
+                    !inputText.trim() 
                       ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed" 
-                      : "bg-[#7C3AED] text-white hover:bg-[#6D28D9] active:scale-95",
-                    isAiAnalyzing && "animate-pulse cursor-wait"
+                      : isAiAnalyzing
+                        ? "bg-indigo-600 text-white cursor-wait"
+                        : "bg-[#7C3AED] text-white hover:bg-[#6D28D9] active:scale-95"
                   )}
                 >
                   {isAiAnalyzing ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-5 h-5 animate-spin text-white" />
                       {t.aiScanning}
                     </>
                   ) : (
@@ -1075,6 +1082,7 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

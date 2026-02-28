@@ -52,24 +52,29 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro-preview",
-      contents: `You are a data redaction expert. Your goal is to find EVERY piece of information that could identify a person or location.
+      model: "gemini-3-flash-preview",
+      contents: `You are a world-class data privacy and redaction expert. Your task is to identify ALL sensitive, personal, or identifying information in the provided text.
       
-      CRITICAL: You MUST find all NAMES of people. Even if they are common names.
+      CRITICAL: You MUST be extremely thorough. If a word or phrase could potentially identify a person, location, or account, you MUST flag it.
       
-      Categories to find:
-      - NAME: Full names, first names, last names.
-      - EMAIL: Email addresses.
-      - PHONE: Phone numbers.
-      - ADDRESS: Physical addresses, city names, street names.
-      - IP_ADDRESS: IP addresses.
-      - CREDIT_CARD: Credit card numbers.
-      - OTHER: Any other unique identifiers.
+      Categories to identify:
+      - NAME: Full names, first names, last names, usernames, or initials.
+      - EMAIL: Any email addresses.
+      - PHONE: Phone numbers in any format.
+      - ADDRESS: Street addresses, city names, zip codes, or specific location names.
+      - IP_ADDRESS: IPv4 or IPv6 addresses.
+      - CREDIT_CARD: Credit card or bank account numbers.
+      - OTHER: Social security numbers, passport numbers, or any other unique IDs.
 
-      The "text" field MUST be the EXACT string from the source text.
+      RULES:
+      1. The "text" field MUST match the EXACT substring from the source text.
+      2. Do not include punctuation at the end of a name unless it's part of the name.
+      3. If you find multiple instances of the same name, list it once.
       
       Text to scan:
-      ${text}`,
+      """
+      ${text}
+      """`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -87,6 +92,7 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
               },
               reason: {
                 type: Type.STRING,
+                description: "Briefly explain why this was flagged.",
               },
             },
             required: ["text", "type"],
@@ -96,7 +102,21 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
     });
 
     console.log("AI Raw Response:", response.text);
-    const result = JSON.parse(response.text || "[]");
+    let cleanText = response.text || "[]";
+    // Strip markdown code blocks if present
+    if (cleanText.includes("```json")) {
+      const parts = cleanText.split("```json");
+      if (parts.length > 1) {
+        cleanText = parts[1].split("```")[0];
+      }
+    } else if (cleanText.includes("```")) {
+      const parts = cleanText.split("```");
+      if (parts.length > 1) {
+        cleanText = parts[1].split("```")[0];
+      }
+    }
+    
+    const result = JSON.parse(cleanText.trim());
     return result.map((item: any) => ({ ...item, source: "AI" }));
   } catch (error) {
     console.error("Error detecting sensitive info with AI:", error);
