@@ -667,7 +667,7 @@ export default function App() {
 
   return (
     <div className={cn("min-h-screen transition-colors duration-300 font-sans selection:bg-indigo-100", isDarkMode && "dark")}>
-      <div className={cn("min-h-screen", isDarkMode ? "bg-slate-950 text-white" : "bg-[#F8F9FA] text-slate-900")}>
+      <div className={cn("min-h-screen", isDarkMode ? "bg-slate-950 text-white" : "bg-white text-slate-900")}>
         <JoisstNavbar 
         onUpload={() => fileInputRef.current?.click()} 
         onClear={clearAll} 
@@ -698,7 +698,7 @@ export default function App() {
                 <path d="m412.4 132.7-64.7 207.5-.6 1.8-47.1-14.7 47.7-152.9 17.6-56.3z" fill="#f2ae96"/>
                 <path d="m418.3 82.8c4.9 1.5 7.6 6.7 6.1 11.6l-12 38.4-47.1-14.8 12-38.4c1.5-4.9 6.7-7.6 11.6-6.1z" fill="#9e66aa"/>
                 <path d="m347.7 340.2v74.2c0 3.3-2.7 5.9-5.9 5.9h-268.2c-3.3 0-5.9-2.7-5.9-5.9v-335.3c0-3.3 2.7-5.9 5.9-5.9h268.1c3.3 0 5.9 2.7 5.9 5.9v95.2l-47.6 153 8.9 54.5 38.3-39.8z" fill="#e1e5e8"/>
-                <g className="fill-slate-900 dark:fill-white">
+                <g fill={isDarkMode ? "#ffffff" : "#333333"}>
                   <path d="m308.8 387.5c-.6 0-1.2-.1-1.7-.3-2.1-.6-3.6-2.4-4-4.6l-8.9-54.5c-.1-.9-.1-1.8.2-2.6l77.3-247.6c1.2-3.8 3.8-6.9 7.3-8.8s7.6-2.2 11.4-1l29.6 9.2c7.9 2.5 12.3 10.9 9.8 18.8l-77.3 247.6c-.3.9-.7 1.6-1.3 2.3l-38.2 39.8c-1.1 1.1-2.6 1.7-4.2 1.7zm-2.9-59.8 6.8 41.8 29.3-30.5 76.9-246.3c.6-1.8-.5-3.8-2.3-4.3l-29.6-9.2c-.9-.3-1.8-.2-2.6.2s-1.4 1.2-1.7 2z"/>
                   <path d="m412.4 138.5c-.6 0-1.1-.1-1.7-.3l-47.2-14.7c-3-.9-4.7-4.2-3.8-7.2s4.2-4.7 7.2-3.8l47.2 14.7c3 .9 4.7 4.2 3.8 7.2-.7 2.5-3 4.1-5.5 4.1z"/>
                   <path d="m347.1 347.7c-.6 0-1.1-.1-1.7-.3l-47.2-14.7c-3-.9-4.7-4.2-3.8-7.2s4.2-4.7 7.2-3.8l47.2 14.7c3 .9 4.7 4.2 3.8 7.2-.8 2.6-3 4.1-5.5 4.1z"/>
@@ -716,7 +716,7 @@ export default function App() {
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Redactly</h1>
+            <h1 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase">Redactly</h1>
             <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">Professional Redaction Tool</p>
           </div>
         </div>
@@ -726,7 +726,7 @@ export default function App() {
           {/* Left Column: Input */}
           <div className="lg:col-span-7 space-y-6">
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[600px]">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-800/50">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-slate-400" />
                   <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.sourceText}</h2>
@@ -846,7 +846,7 @@ export default function App() {
           <div className="lg:col-span-5 space-y-6">
             {/* Detected Entities */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col max-h-[400px]">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-800/50">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-indigo-500" />
                   <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.detectedEntities}</h2>
@@ -932,7 +932,7 @@ export default function App() {
 
             {/* Output Preview */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[450px]">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-800/50">
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-slate-400" />
                   <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.redactedPreview}</h2>

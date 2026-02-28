@@ -98,11 +98,10 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
     });
 
     let cleanText = response.text?.trim() || "[]";
-    // Strip markdown code blocks if present
-    if (cleanText.includes("```json")) {
-      cleanText = cleanText.split("```json")[1].split("```")[0];
-    } else if (cleanText.includes("```")) {
-      cleanText = cleanText.split("```")[1].split("```")[0];
+    // Robustly extract JSON from markdown code blocks if present
+    const jsonMatch = cleanText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (jsonMatch) {
+      cleanText = jsonMatch[1];
     }
     
     const result = JSON.parse(cleanText.trim());
