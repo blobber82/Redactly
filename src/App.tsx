@@ -870,7 +870,7 @@ export default function App() {
 
               <div className="flex-1 overflow-y-auto p-4 space-y-2">
                 {entities.length === 0 ? (
-                  <div className="h-32 flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 space-y-2">
+                  <div className="h-32 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 space-y-2">
                     <Search className="w-8 h-8 opacity-20" />
                     <p className="text-sm italic">{t.noEntities}</p>
                   </div>
@@ -982,14 +982,14 @@ export default function App() {
 
               <div 
                 ref={resultRef}
-                className="flex-1 p-6 overflow-y-auto bg-slate-900 text-slate-300 font-mono text-sm leading-relaxed"
+                className="flex-1 p-6 overflow-y-auto bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-300 font-mono text-sm leading-relaxed"
               >
                 {inputText ? (
                   <div className="whitespace-pre-wrap">
                     {showOriginal ? inputText : redactedText}
                   </div>
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-600 space-y-2">
+                  <div className="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 space-y-2">
                     <FileText className="w-8 h-8 opacity-20" />
                     <p className="text-sm italic">{t.previewPlaceholder}</p>
                   </div>
