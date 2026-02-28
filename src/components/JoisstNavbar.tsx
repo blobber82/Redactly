@@ -28,6 +28,8 @@ interface JoisstNavbarProps {
   onLanguageChange: (lang: string) => void;
   user?: any;
   referralCode?: string | null;
+  isDarkMode: boolean;
+  onThemeToggle: () => void;
 }
 
 const translations: Record<string, any> = {
@@ -95,9 +97,8 @@ const BrainIcon = () => (
   </svg>
 );
 
-export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onUpload, language, onLanguageChange, user, referralCode }) => {
+export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onUpload, language, onLanguageChange, user, referralCode, isDarkMode, onThemeToggle }) => {
   const [isPwaActive, setIsPwaActive] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   const t = translations[language] || translations.English;
@@ -142,7 +143,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
     <button
       onClick={onClick}
       className={cn(
-        "group relative flex items-center justify-center rounded-xl border border-slate-200 transition-all duration-200",
+        "group relative flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 transition-all duration-200",
         "w-10 h-10 sm:w-14 sm:h-14",
         "bg-slate-400/5 dark:bg-slate-400/10",
         "hover:border-[#d90168]",
@@ -158,7 +159,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
   const CurrencyButton = ({ icon: Icon, value, color, customIcon }: { icon?: any, value: string, color: string, customIcon?: React.ReactNode }) => (
     <div
       className={cn(
-        "group flex items-center gap-2 px-5 rounded-xl border border-slate-200 transition-all duration-200",
+        "group flex items-center gap-2 px-5 rounded-xl border border-slate-200 dark:border-slate-800 transition-all duration-200",
         "h-10 sm:h-14",
         "hover:border-[#d90168]"
       )}
@@ -214,7 +215,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             <div className="relative">
               <button
                 onClick={() => setShowLangMenu(!showLangMenu)}
-                className="group flex items-center gap-2 px-3 sm:px-4 h-10 sm:h-14 rounded-xl border border-slate-200 transition-all duration-200 hover:border-[#d90168]"
+                className="group flex items-center gap-2 px-3 sm:px-4 h-10 sm:h-14 rounded-xl border border-slate-200 dark:border-slate-800 transition-all duration-200 hover:border-[#d90168]"
               >
                 {currentFlag}
                 <ChevronDown className="w-4 h-4 text-slate-500 group-hover:text-[#d90168] transition-colors" />
@@ -244,7 +245,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             </div>
 
             {/* 4. Light/Dark mode toggle */}
-            <UtilityBox onClick={() => setIsDarkMode(!isDarkMode)}>
+            <UtilityBox onClick={onThemeToggle}>
               {isDarkMode ? <Sun className="w-5 h-5 sm:w-7 sm:h-7" /> : <Moon className="w-5 h-5 sm:w-7 sm:h-7" />}
             </UtilityBox>
 
@@ -261,7 +262,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             {/* 7. Profile icon */}
             <a 
               href={appendRef("https://api.joisst.com/dashboard")}
-              className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-slate-100 overflow-hidden"
+              className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-slate-100 dark:bg-slate-800 overflow-hidden"
             >
               <UserIcon className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 group-hover:text-[#d90168] transition-colors" />
             </a>

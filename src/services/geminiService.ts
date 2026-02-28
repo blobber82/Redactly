@@ -53,27 +53,23 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
     const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3.1-pro-preview",
-      contents: `You are a professional privacy and data protection officer. Your task is to identify ALL sensitive information in the provided text that must be redacted to ensure complete anonymity.
+      contents: `You are a data redaction expert. Your goal is to find EVERY piece of information that could identify a person or location.
+      
+      CRITICAL: You MUST find all NAMES of people. Even if they are common names.
+      
+      Categories to find:
+      - NAME: Full names, first names, last names.
+      - EMAIL: Email addresses.
+      - PHONE: Phone numbers.
+      - ADDRESS: Physical addresses, city names, street names.
+      - IP_ADDRESS: IP addresses.
+      - CREDIT_CARD: Credit card numbers.
+      - OTHER: Any other unique identifiers.
 
-      STRICT RULES:
-      1. Identify EVERY person's name (NAME). This includes first names, last names, and initials.
-      2. Identify all contact info: EMAIL, PHONE, ADDRESS.
-      3. Identify technical identifiers: IP_ADDRESS.
-      4. Identify financial info: CREDIT_CARD.
-      5. Identify OTHER sensitive context: Company names, specific project names, birth dates, or any unique identifiers that could lead to de-anonymization.
-      6. The "text" field MUST be the EXACT character-for-character substring from the source text.
-      7. Return ONLY a valid JSON array of objects.
-
-      Example Output Format:
-      [
-        {"text": "John Doe", "type": "NAME", "reason": "Full name of an individual"},
-        {"text": "123 Main St", "type": "ADDRESS", "reason": "Physical location"}
-      ]
-
-      Text to analyze:
-      """
-      ${text}
-      """`,
+      The "text" field MUST be the EXACT string from the source text.
+      
+      Text to scan:
+      ${text}`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -83,16 +79,14 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
             properties: {
               text: {
                 type: Type.STRING,
-                description: "The EXACT substring from the source text.",
+                description: "The exact substring from the text.",
               },
               type: {
                 type: Type.STRING,
                 enum: ["NAME", "EMAIL", "PHONE", "ADDRESS", "IP_ADDRESS", "CREDIT_CARD", "OTHER"],
-                description: "The category of the sensitive information.",
               },
               reason: {
                 type: Type.STRING,
-                description: "Brief reason why this was flagged.",
               },
             },
             required: ["text", "type"],
@@ -101,6 +95,7 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
       },
     });
 
+    console.log("AI Raw Response:", response.text);
     const result = JSON.parse(response.text || "[]");
     return result.map((item: any) => ({ ...item, source: "AI" }));
   } catch (error) {

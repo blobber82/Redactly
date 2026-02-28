@@ -6,6 +6,7 @@ import {
   Download, 
   Trash2, 
   RefreshCw, 
+  Loader2,
   Check, 
   Eye, 
   EyeOff,
@@ -218,6 +219,7 @@ export default function App() {
   const [entities, setEntities] = useState<DetectedEntity[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [redactionState, setRedactionState] = useState<RedactionState>({});
   const [showOriginal, setShowOriginal] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -248,7 +250,9 @@ export default function App() {
         });
         
         if (res.status === 401) {
-          window.location.href = 'https://api.joisst.com/login';
+          // Guest User: 1 heart, 0 brains
+          setUser({ hearts: 1, brains: 0, isGuest: true });
+          setCookieConsent(false);
           return;
         }
 
@@ -257,10 +261,12 @@ export default function App() {
           setUser(userData);
           setCookieConsent(!!userData.cookieConsent);
         } else {
+          setUser({ hearts: 1, brains: 0, isGuest: true });
           setCookieConsent(false);
         }
       } catch (err) {
         console.error("Auth handshake failed:", err);
+        setUser({ hearts: 1, brains: 0, isGuest: true });
         setCookieConsent(false);
       }
     };
@@ -269,7 +275,24 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Theme Management
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   const spendBrain = async () => {
+    if (user?.isGuest) {
+      if ((user.brains || 0) <= 0) {
+        window.location.href = 'https://api.joisst.com/login';
+        return false;
+      }
+      setUser((prev: any) => ({ ...prev, brains: prev.brains - 1 }));
+      return true;
+    }
     try {
       const res = await fetch('https://api.joisst.com/api/brains?action=spend', {
         method: 'POST',
@@ -361,6 +384,7 @@ export default function App() {
     setError(null);
     try {
       const aiDetected = await detectSensitiveInfoAI(inputText);
+      console.log("AI Detected Entities:", aiDetected);
       if (aiDetected.length === 0) {
         setError('AI Scan complete: No additional sensitive entities detected.');
       }
@@ -533,25 +557,25 @@ export default function App() {
 
   const getEntityColor = (type: string) => {
     switch (type) {
-      case 'NAME': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'EMAIL': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-      case 'PHONE': return 'bg-amber-100 text-amber-700 border-amber-200';
-      case 'ADDRESS': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'IP_ADDRESS': return 'bg-rose-100 text-rose-700 border-rose-200';
-      case 'CREDIT_CARD': return 'bg-orange-100 text-orange-700 border-orange-200';
-      default: return 'bg-slate-100 text-slate-700 border-slate-200';
+      case 'NAME': return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+      case 'EMAIL': return 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+      case 'PHONE': return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+      case 'ADDRESS': return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800';
+      case 'IP_ADDRESS': return 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+      case 'CREDIT_CARD': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
+      default: return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
     }
   };
 
   const getEntityHighlightColor = (type: string) => {
     switch (type) {
-      case 'NAME': return 'bg-blue-200/50 border-blue-300';
-      case 'EMAIL': return 'bg-emerald-200/50 border-emerald-300';
-      case 'PHONE': return 'bg-amber-200/50 border-amber-300';
-      case 'ADDRESS': return 'bg-purple-200/50 border-purple-300';
-      case 'IP_ADDRESS': return 'bg-rose-200/50 border-rose-300';
-      case 'CREDIT_CARD': return 'bg-orange-200/50 border-orange-300';
-      default: return 'bg-slate-200/50 border-slate-300';
+      case 'NAME': return 'bg-blue-200/50 dark:bg-blue-900/50 border-blue-300 dark:border-blue-700';
+      case 'EMAIL': return 'bg-emerald-200/50 dark:bg-emerald-900/50 border-emerald-300 dark:border-emerald-700';
+      case 'PHONE': return 'bg-amber-200/50 dark:bg-amber-900/50 border-amber-300 dark:border-amber-700';
+      case 'ADDRESS': return 'bg-purple-200/50 dark:bg-purple-900/50 border-purple-300 dark:border-purple-700';
+      case 'IP_ADDRESS': return 'bg-rose-200/50 dark:bg-rose-900/50 border-rose-300 dark:border-rose-700';
+      case 'CREDIT_CARD': return 'bg-orange-200/50 dark:bg-orange-900/50 border-orange-300 dark:border-orange-700';
+      default: return 'bg-slate-200/50 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700';
     }
   };
 
@@ -637,7 +661,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans selection:bg-indigo-100">
+    <div className={cn("min-h-screen transition-colors duration-300 font-sans selection:bg-indigo-100", isDarkMode ? "bg-slate-950 text-white" : "bg-[#F8F9FA] text-slate-900")}>
       <JoisstNavbar 
         onUpload={() => fileInputRef.current?.click()} 
         onClear={clearAll} 
@@ -645,6 +669,8 @@ export default function App() {
         onLanguageChange={setLanguage}
         user={user}
         referralCode={referralCode}
+        isDarkMode={isDarkMode}
+        onThemeToggle={() => setIsDarkMode(!isDarkMode)}
       />
 
       <input 
@@ -658,7 +684,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* App Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-200">
+          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
             <svg enable-background="new 0 0 492 492" viewBox="0 0 492 492" xmlns="http://www.w3.org/2000/svg">
               <g clip-rule="evenodd" fill-rule="evenodd">
                 <path d="m0 0h492v492h-492z" fill="#e8baba"/>
@@ -666,7 +692,7 @@ export default function App() {
                 <path d="m412.4 132.7-64.7 207.5-.6 1.8-47.1-14.7 47.7-152.9 17.6-56.3z" fill="#f2ae96"/>
                 <path d="m418.3 82.8c4.9 1.5 7.6 6.7 6.1 11.6l-12 38.4-47.1-14.8 12-38.4c1.5-4.9 6.7-7.6 11.6-6.1z" fill="#9e66aa"/>
                 <path d="m347.7 340.2v74.2c0 3.3-2.7 5.9-5.9 5.9h-268.2c-3.3 0-5.9-2.7-5.9-5.9v-335.3c0-3.3 2.7-5.9 5.9-5.9h268.1c3.3 0 5.9 2.7 5.9 5.9v95.2l-47.6 153 8.9 54.5 38.3-39.8z" fill="#e1e5e8"/>
-                <g fill="#333">
+                <g className="fill-slate-900 dark:fill-white">
                   <path d="m308.8 387.5c-.6 0-1.2-.1-1.7-.3-2.1-.6-3.6-2.4-4-4.6l-8.9-54.5c-.1-.9-.1-1.8.2-2.6l77.3-247.6c1.2-3.8 3.8-6.9 7.3-8.8s7.6-2.2 11.4-1l29.6 9.2c7.9 2.5 12.3 10.9 9.8 18.8l-77.3 247.6c-.3.9-.7 1.6-1.3 2.3l-38.2 39.8c-1.1 1.1-2.6 1.7-4.2 1.7zm-2.9-59.8 6.8 41.8 29.3-30.5 76.9-246.3c.6-1.8-.5-3.8-2.3-4.3l-29.6-9.2c-.9-.3-1.8-.2-2.6.2s-1.4 1.2-1.7 2z"/>
                   <path d="m412.4 138.5c-.6 0-1.1-.1-1.7-.3l-47.2-14.7c-3-.9-4.7-4.2-3.8-7.2s4.2-4.7 7.2-3.8l47.2 14.7c3 .9 4.7 4.2 3.8 7.2-.7 2.5-3 4.1-5.5 4.1z"/>
                   <path d="m347.1 347.7c-.6 0-1.1-.1-1.7-.3l-47.2-14.7c-3-.9-4.7-4.2-3.8-7.2s4.2-4.7 7.2-3.8l47.2 14.7c3 .9 4.7 4.2 3.8 7.2-.8 2.6-3 4.1-5.5 4.1z"/>
@@ -684,8 +710,8 @@ export default function App() {
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Redactly</h1>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Professional Redaction Tool</p>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Redactly</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">Professional Redaction Tool</p>
           </div>
         </div>
 
@@ -693,17 +719,17 @@ export default function App() {
           
           {/* Left Column: Input */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[600px]">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[600px]">
+              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-slate-400" />
-                  <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">{t.sourceText}</h2>
+                  <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.sourceText}</h2>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="relative group">
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all text-xs font-bold"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-600 hover:text-indigo-600 transition-all text-xs font-bold"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       {t.uploadFile}
@@ -721,8 +747,8 @@ export default function App() {
                     className={cn(
                       "flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all text-xs font-bold",
                       !inputText 
-                        ? "bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed" 
-                        : "bg-white border-slate-200 text-rose-600 hover:border-rose-600 hover:bg-rose-50"
+                        ? "bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-300 dark:text-slate-600 cursor-not-allowed" 
+                        : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-rose-600 hover:border-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20"
                     )}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -730,11 +756,11 @@ export default function App() {
                   </button>
 
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-900/30">
                       <Check className="w-3 h-3" />
                       {t.regexActive}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400">
+                    <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
                       {inputText.length} {t.characters}
                     </div>
                   </div>
@@ -745,7 +771,7 @@ export default function App() {
                 {/* Highlight Layer */}
                 <div 
                   id="highlight-layer"
-                  className="absolute inset-0 p-6 text-slate-800 font-mono text-sm leading-relaxed overflow-y-auto pointer-events-none"
+                  className="absolute inset-0 p-6 text-slate-800 dark:text-slate-100 font-mono text-sm leading-relaxed overflow-y-auto pointer-events-none"
                   style={{ color: 'transparent' }}
                 >
                   {renderHighlightedText()}
@@ -757,14 +783,14 @@ export default function App() {
                   onChange={(e) => setInputText(e.target.value)}
                   onScroll={handleScroll}
                   placeholder={t.placeholder}
-                  className="absolute inset-0 w-full h-full p-6 resize-none focus:outline-none text-slate-800 font-mono text-sm leading-relaxed placeholder:text-slate-300 bg-transparent caret-indigo-600"
+                  className="absolute inset-0 w-full h-full p-6 resize-none focus:outline-none text-slate-800 dark:text-slate-100 font-mono text-sm leading-relaxed placeholder:text-slate-300 dark:placeholder:text-slate-700 bg-transparent caret-indigo-600"
                   spellCheck={false}
                 />
               </div>
               
-              <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
                 <div className="flex flex-col">
-                  <div className="text-sm text-slate-400 max-w-[300px]">
+                  <div className="text-sm text-slate-400 dark:text-slate-500 max-w-[300px]">
                     {t.regexInfo}
                   </div>
                   <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mt-1">
@@ -777,14 +803,14 @@ export default function App() {
                   className={cn(
                     "px-6 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all shadow-sm",
                     isAiAnalyzing || !inputText.trim() 
-                      ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
+                      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed" 
                       : "bg-[#7C3AED] text-white hover:bg-[#6D28D9] active:scale-95",
-                    isAiAnalyzing && "animate-pulse"
+                    isAiAnalyzing && "animate-pulse cursor-wait"
                   )}
                 >
                   {isAiAnalyzing ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       {t.aiScanning}
                     </>
                   ) : (
@@ -801,7 +827,7 @@ export default function App() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-3 text-rose-700 text-sm"
+                className="p-4 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 rounded-xl flex items-start gap-3 text-rose-700 dark:text-rose-400 text-sm"
               >
                 <AlertCircle className="w-5 h-5 shrink-0" />
                 <p>{error}</p>
@@ -812,11 +838,11 @@ export default function App() {
           {/* Right Column: Analysis & Results */}
           <div className="lg:col-span-5 space-y-6">
             {/* Detected Entities */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[400px]">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col max-h-[400px]">
+              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-indigo-500" />
-                  <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">{t.detectedEntities}</h2>
+                  <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.detectedEntities}</h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
@@ -837,7 +863,7 @@ export default function App() {
 
               <div className="flex-1 overflow-y-auto p-4 space-y-2">
                 {entities.length === 0 ? (
-                  <div className="h-32 flex flex-col items-center justify-center text-slate-400 space-y-2">
+                  <div className="h-32 flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 space-y-2">
                     <Search className="w-8 h-8 opacity-20" />
                     <p className="text-sm italic">{t.noEntities}</p>
                   </div>
@@ -850,8 +876,8 @@ export default function App() {
                       className={cn(
                         "group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer",
                         redactionState[entity.text] 
-                          ? "bg-slate-50 border-slate-200" 
-                          : "bg-white border-slate-100 hover:border-slate-200"
+                          ? "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700" 
+                          : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700"
                       )}
                       onClick={() => toggleRedaction(entity.text)}
                     >
@@ -865,14 +891,18 @@ export default function App() {
                           </span>
                           <span className={cn(
                             "text-[9px] font-mono px-1 rounded",
-                            entity.source === 'AI' ? "bg-indigo-50 text-indigo-500" : "bg-emerald-50 text-emerald-500"
+                            entity.source === 'AI' 
+                              ? "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 dark:text-indigo-400" 
+                              : "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 dark:text-emerald-400"
                           )}>
                             {entity.source}
                           </span>
                         </div>
                         <span className={cn(
                           "text-sm font-mono truncate",
-                          redactionState[entity.text] ? "text-slate-400 line-through" : "text-slate-700"
+                          redactionState[entity.text] 
+                            ? "text-slate-400 dark:text-slate-600 line-through" 
+                            : "text-slate-700 dark:text-slate-200"
                         )}>
                           {entity.text}
                         </span>
@@ -894,17 +924,17 @@ export default function App() {
             </div>
 
             {/* Output Preview */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[450px]">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[450px]">
+              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-slate-400" />
-                  <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">{t.redactedPreview}</h2>
+                  <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.redactedPreview}</h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="relative">
                     <button 
                       onClick={() => setShowActionsMenu(!showActionsMenu)}
-                      className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-500"
+                      className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-500"
                       title={t.actions}
                     >
                       <Layers className="w-4 h-4" />
@@ -917,21 +947,21 @@ export default function App() {
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-slate-200 shadow-xl z-50 overflow-hidden"
+                            className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl z-50 overflow-hidden"
                           >
                             <div className="p-1">
                               {uploadedFile && !uploadedFile.type.startsWith('image/') && (
-                                <button onClick={() => { handleDownloadOriginalFormat(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-indigo-600 font-bold hover:bg-indigo-50 rounded-lg transition-colors">
+                                <button onClick={() => { handleDownloadOriginalFormat(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-indigo-600 font-bold hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors">
                                   <RefreshCw className="w-4 h-4" /> {t.downloadOriginal}
                                 </button>
                               )}
-                              <button onClick={() => { handleDownloadTxt(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                              <button onClick={() => { handleDownloadTxt(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
                                 <FileText className="w-4 h-4" /> {t.downloadTxt}
                               </button>
-                              <button onClick={() => { handleExportPdf(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                              <button onClick={() => { handleExportPdf(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
                                 <Download className="w-4 h-4" /> {t.exportPdf}
                               </button>
-                              <button onClick={() => { handleDownloadImage(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                              <button onClick={() => { handleDownloadImage(); setShowActionsMenu(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
                                 <Eye className="w-4 h-4" /> {t.downloadImage}
                               </button>
                             </div>
@@ -960,13 +990,13 @@ export default function App() {
               </div>
 
               {/* Primary Actions */}
-              <div className="p-4 bg-slate-50 border-t border-slate-100">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
                 <button
                   onClick={handleCopy}
                   disabled={!inputText}
                   className={cn(
                     "w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-base transition-all shadow-sm",
-                    !inputText ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95"
+                    !inputText ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed" : "bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95"
                   )}
                 >
                   {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
@@ -980,8 +1010,8 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-4 py-12 border-t border-slate-200 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-500">
+      <footer className="max-w-7xl mx-auto px-4 py-12 border-t border-slate-200 dark:border-slate-800 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-500 dark:text-slate-400">
           <div className="space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">{t.hybridDetection}</h3>
             <p className="text-sm leading-relaxed">
