@@ -52,19 +52,35 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.1-pro-preview",
       contents: `You are a world-class data privacy and redaction expert. Your task is to identify ALL sensitive, personal, or identifying information in the provided text.
       
-      CRITICAL: You MUST be extremely thorough. If a word or phrase could potentially identify a person, location, or account, you MUST flag it.
+      CRITICAL: You MUST be extremely thorough and even "paranoid". Names are the most critical sensitive data. Look for them in greetings (Hi...), signatures (Best...), as subjects of sentences, and even in casual mentions.
       
       Categories to identify:
-      - NAME: Full names, first names, last names, usernames, or initials.
+      - NAME: Full names, first names, last names, usernames, social media handles, nicknames, or initials.
       - EMAIL: Any email addresses.
-      - PHONE: Phone numbers in any format.
+      - PHONE: Phone numbers.
       - ADDRESS: Street addresses, city names, zip codes, or specific location names.
       - IP_ADDRESS: IPv4 or IPv6 addresses.
       - CREDIT_CARD: Credit card or bank account numbers.
       - OTHER: Social security numbers, passport numbers, or any other unique IDs.
+
+      EXAMPLES:
+      Input: "Hi John, I'll be at 123 Main St. Call me at 555-0199."
+      Output: [{"text": "John", "type": "NAME"}, {"text": "123 Main St", "type": "ADDRESS"}, {"text": "555-0199", "type": "PHONE"}]
+
+      Input: "Best regards, Sarah Miller"
+      Output: [{"text": "Sarah Miller", "type": "NAME"}]
+
+      Input: "I was talking to @alex_dev about the project."
+      Output: [{"text": "@alex_dev", "type": "NAME"}]
+
+      Input: "The package for Mr. Robert Chen is ready."
+      Output: [{"text": "Robert Chen", "type": "NAME"}]
+
+      Input: "Hey, it's me, Dave."
+      Output: [{"text": "Dave", "type": "NAME"}]
 
       RULES:
       1. The "text" field MUST match the EXACT substring from the source text.
@@ -89,6 +105,7 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
               type: {
                 type: Type.STRING,
                 enum: ["NAME", "EMAIL", "PHONE", "ADDRESS", "IP_ADDRESS", "CREDIT_CARD", "OTHER"],
+                description: "The category of the sensitive information. Use NAME for any personal identifiers like names, usernames, or handles.",
               },
               reason: {
                 type: Type.STRING,
