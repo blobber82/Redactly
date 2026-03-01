@@ -52,21 +52,29 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: `Identify all sensitive information in the following text. 
+      model: "gemini-3.1-pro-preview",
+      contents: `You are a world-class data privacy and redaction expert. Your task is to identify ALL sensitive, personal, or identifying information in the provided text.
       
-      CRITICAL: You MUST detect all personal names (first, last, or full names), even if they appear in casual context, greetings, signatures, or as subjects of sentences. Look for names like "John", "Sarah Miller", "@alex_dev", etc.
+      CRITICAL: You MUST be extremely thorough. Names are the most critical sensitive data. Look for them in:
+      - Greetings (e.g., "Hi John", "Dear Sarah")
+      - Signatures (e.g., "Best, Robert Chen", "Sincerely, Miller")
+      - Casual mentions (e.g., "I spoke with Alex yesterday")
+      - Usernames or handles (e.g., "@dev_alex", "user: jsmith")
+      - Contextual identifiers (e.g., "The patient, Mr. Thompson")
       
-      Categories:
-      - NAME: Any person's name, username, handle, or personal identifier.
-      - EMAIL: Email addresses.
+      Categories to identify:
+      - NAME: Full names, first names, last names, usernames, handles, or initials.
+      - EMAIL: Any email addresses.
       - PHONE: Phone numbers.
-      - ADDRESS: Physical addresses, city names, or specific locations.
-      - IP_ADDRESS: IP addresses.
-      - CREDIT_CARD: Credit card numbers.
-      - OTHER: SSNs, IDs, or other unique identifiers.
+      - ADDRESS: Street addresses, city names, zip codes, or specific location names.
+      - IP_ADDRESS: IPv4 or IPv6 addresses.
+      - CREDIT_CARD: Credit card or bank account numbers.
+      - OTHER: SSNs, passport numbers, or any other unique identifiers.
 
-      Return a JSON array of objects with "text" (the exact substring) and "type" (the category).
+      RULES:
+      1. The "text" field MUST match the EXACT substring from the source text.
+      2. If you find multiple instances of the same entity, list it once.
+      3. Be highly sensitive to context. If a word looks like a name in context, flag it as NAME.
       
       Text to scan:
       """
