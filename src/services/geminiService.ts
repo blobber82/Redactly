@@ -53,7 +53,13 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
     const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3.1-pro-preview",
-      contents: `You are a world-class data privacy and redaction expert. Your task is to identify ALL sensitive, personal, or identifying information in the provided text.
+      contents: `Identify all sensitive information in this text:
+      
+      """
+      ${text}
+      """`,
+      config: {
+        systemInstruction: `You are a world-class data privacy and redaction expert. Your task is to identify ALL sensitive, personal, or identifying information.
       
       CRITICAL: You MUST be extremely thorough. Names are the most critical sensitive data. Look for them in:
       - Greetings (e.g., "Hi John", "Dear Sarah")
@@ -75,13 +81,9 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
       1. The "text" field MUST match the EXACT substring from the source text.
       2. If you find multiple instances of the same entity, list it once.
       3. Be highly sensitive to context. If a word looks like a name in context, flag it as NAME.
-      
-      Text to scan:
-      """
-      ${text}
-      """`,
-      config: {
+      4. Return ONLY a JSON array of objects.`,
         responseMimeType: "application/json",
+        thinkingConfig: { thinkingLevel: "HIGH" },
         responseSchema: {
           type: Type.ARRAY,
           items: {

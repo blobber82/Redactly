@@ -173,7 +173,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
 
   return (
     <nav className={cn(
-      "sticky top-0 z-50 transition-all duration-300 backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border-b",
+      "sticky top-0 z-50 transition-all duration-300 backdrop-blur-xl bg-white dark:bg-slate-900/90 border-b",
       isDarkMode ? "border-slate-800" : "border-slate-100",
       isPwaActive ? "h-24 sm:h-40" : "h-16 sm:h-28"
     )}>

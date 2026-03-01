@@ -280,9 +280,11 @@ export default function App() {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
       document.documentElement.style.colorScheme = 'dark';
+      document.body.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.style.colorScheme = 'light';
+      document.body.classList.remove('dark');
     }
   }, [isDarkMode]);
 
@@ -692,7 +694,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* App Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-300 dark:border-slate-800 bg-white">
             <svg enable-background="new 0 0 492 492" viewBox="0 0 492 492" xmlns="http://www.w3.org/2000/svg">
               <g clip-rule="evenodd" fill-rule="evenodd">
                 <path d="m0 0h492v492h-492z" fill="#e8baba"/>
@@ -718,8 +720,8 @@ export default function App() {
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase">Redactly</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">Professional Redaction Tool</p>
+            <h1 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase leading-none">Redactly</h1>
+            <p className="text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Professional Redaction Tool</p>
           </div>
         </div>
 
