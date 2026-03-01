@@ -55,16 +55,16 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
       model: "gemini-3-flash-preview",
       contents: `Identify all sensitive information in the following text. 
       
-      CRITICAL: You MUST detect all personal names (first, last, or full names), even if they appear in casual context, greetings, or signatures.
+      CRITICAL: You MUST detect all personal names (first, last, or full names), even if they appear in casual context, greetings, signatures, or as subjects of sentences. Look for names like "John", "Sarah Miller", "@alex_dev", etc.
       
       Categories:
-      - NAME: Any person's name, username, or handle.
+      - NAME: Any person's name, username, handle, or personal identifier.
       - EMAIL: Email addresses.
       - PHONE: Phone numbers.
-      - ADDRESS: Physical addresses or specific locations.
+      - ADDRESS: Physical addresses, city names, or specific locations.
       - IP_ADDRESS: IP addresses.
       - CREDIT_CARD: Credit card numbers.
-      - OTHER: SSNs, IDs, etc.
+      - OTHER: SSNs, IDs, or other unique identifiers.
 
       Return a JSON array of objects with "text" (the exact substring) and "type" (the category).
       
