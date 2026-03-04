@@ -37,12 +37,10 @@ interface RedactionState {
 const appTranslations: Record<string, any> = {
   English: {
     sourceText: "Source Text",
-    regexActive: "Regex Active",
+    regexActive: "Rule-Based Scanning",
     characters: "characters",
     placeholder: "Paste your logs, emails, or any text containing sensitive data here...",
-    regexInfo: "Regex automatically scans as you type. Use AI for advanced detection (names, context).",
-    aiScanning: "AI Scanning...",
-    advancedAiScan: "Advanced AI Scan",
+    regexInfo: "Redactly automatically scans as you type using explicit rules and patterns.",
     detectedEntities: "Detected Entities",
     redactAll: "Redact All",
     undoAll: "Undo All",
@@ -52,8 +50,8 @@ const appTranslations: Record<string, any> = {
     copy: "Copy",
     downloadImage: "Download as Image",
     previewPlaceholder: "Preview will appear here.",
-    hybridDetection: "Hybrid Detection",
-    hybridInfo: "Redactly uses high-speed Regex for common patterns (emails, IPs) and Advanced AI for context-aware entities like names and addresses.",
+    patternDetection: "Pattern Detection",
+    patternInfo: "Redactly uses high-speed explicit rules for common patterns (emails, IPs, credit cards) and structural cues for context-aware entities.",
     ocrEngine: "OCR Engine",
     ocrInfo: "Built-in Tesseract.js OCR allows you to extract text directly from screenshots or shared windows for instant redaction.",
     fileSupport: "File Support",
@@ -65,6 +63,13 @@ const appTranslations: Record<string, any> = {
       ADDRESS: "ADDRESS",
       IP_ADDRESS: "IP ADDRESS",
       CREDIT_CARD: "CREDIT CARD",
+      DATE: "DATE",
+      GOVT_ID: "GOVT ID",
+      FINANCIAL: "FINANCIAL",
+      AUTH: "AUTH",
+      EMPLOYMENT: "EMPLOYMENT",
+      HEALTH: "HEALTH",
+      OTHER: "OTHER",
     },
     cookieTitle: "Simple Cookies (no “trackers”)",
     cookieContent: "We only use cookies to sync your hearts, brains, and preferences across the Joisst ecosystem. By clicking below, you're cool with this platform-wide synchronisation.",
@@ -77,16 +82,13 @@ const appTranslations: Record<string, any> = {
     clearAll: "Clear All",
     downloadOriginal: "Download Original Format",
     acceptedFormats: "Accepted: .txt, .log, .csv, .json, .jpg, .png",
-    costsOneBrain: "Costs 1 brain",
   },
   Español: {
     sourceText: "Texto Fuente",
-    regexActive: "Regex Activo",
+    regexActive: "Escaneo Basado en Reglas",
     characters: "caracteres",
     placeholder: "Pega tus registros, correos o cualquier texto con datos sensibles aquí...",
-    regexInfo: "Regex escanea automáticamente mientras escribes. Usa IA para detección avanzada (nombres, contexto).",
-    aiScanning: "Escaneando con IA...",
-    advancedAiScan: "Escaneo IA Avanzado",
+    regexInfo: "Redactly escanea automáticamente mientras escribes usando reglas y patrones explícitos.",
     detectedEntities: "Entidades Detectadas",
     redactAll: "Redactar Todo",
     undoAll: "Deshacer Todo",
@@ -96,12 +98,12 @@ const appTranslations: Record<string, any> = {
     copy: "Copiar",
     downloadImage: "Descargar como Imagen",
     previewPlaceholder: "La vista previa aparecerá aquí.",
-    hybridDetection: "Detección Híbrida",
-    hybridInfo: "Redactly usa Regex de alta velocidad para patrones comunes (correos, IPs) e IA avanzada para entidades sensibles al contexto como nombres y direcciones.",
+    patternDetection: "Detección de Patrones",
+    patternInfo: "Redactly usa reglas explícitas de alta velocidad para patrones comunes (correos, IPs, tarjetas) y pistas estructurales para el contexto.",
     ocrEngine: "Motor OCR",
     ocrInfo: "El OCR Tesseract.js integrado te permite extraer texto directamente de capturas de pantalla o ventanas compartidas.",
     fileSupport: "Soporte de Archivos",
-    fileInfo: "Importa archivos .txt, .log, .csv o .json. Perfecto para anonimizar grandes conjuntos de datos o registros del sistema.",
+    fileInfo: "Importa archivos .txt, .log, .csv o .json. Perfecto para anonimizar grandes conjuntos de datos.",
     entityTypes: {
       NAME: "NOMBRE",
       EMAIL: "EMAIL",
@@ -109,9 +111,16 @@ const appTranslations: Record<string, any> = {
       ADDRESS: "DIRECCIÓN",
       IP_ADDRESS: "DIRECCIÓN IP",
       CREDIT_CARD: "TARJETA CRÉDITO",
+      DATE: "FECHA",
+      GOVT_ID: "ID GUBERNAMENTAL",
+      FINANCIAL: "FINANCIERO",
+      AUTH: "AUTENTICACIÓN",
+      EMPLOYMENT: "EMPLEO",
+      HEALTH: "SALUD",
+      OTHER: "OTRO",
     },
     cookieTitle: "Cookies Simples (sin “rastreadores”)",
-    cookieContent: "Solo usamos cookies para sincronizar tus corazones, cerebros y preferencias en todo el ecosistema Joisst. Al hacer clic abajo, aceptas esta sincronización en toda la plataforma.",
+    cookieContent: "Solo usamos cookies para sincronizar tus corazones, cerebros y preferencias en todo el ecosistema Joisst.",
     cookieButton: "¡Genial!",
     exportCleaned: "Exportar Archivo Limpio",
     downloadTxt: "Descargar como .txt",
@@ -121,16 +130,13 @@ const appTranslations: Record<string, any> = {
     clearAll: "Limpiar Todo",
     downloadOriginal: "Descargar Formato Original",
     acceptedFormats: "Aceptados: .txt, .log, .csv, .json, .jpg, .png",
-    costsOneBrain: "Cuesta 1 cerebro",
   },
   Français: {
     sourceText: "Texte Source",
-    regexActive: "Regex Actif",
+    regexActive: "Analyse par Règles",
     characters: "caractères",
     placeholder: "Collez vos logs, emails ou tout texte contenant des données sensibles ici...",
-    regexInfo: "Regex scanne automatiquement pendant la saisie. Utilisez l'IA pour une détection avancée (noms, contexte).",
-    aiScanning: "Analyse IA...",
-    advancedAiScan: "Analyse IA Avancée",
+    regexInfo: "Redactly scanne automatiquement pendant la saisie en utilisant des règles et des motifs explicites.",
     detectedEntities: "Entités Détectées",
     redactAll: "Tout Rédiger",
     undoAll: "Tout Annuler",
@@ -140,12 +146,12 @@ const appTranslations: Record<string, any> = {
     copy: "Copier",
     downloadImage: "Télécharger en Image",
     previewPlaceholder: "L'aperçu apparaîtra ici.",
-    hybridDetection: "Détection Hybride",
-    hybridInfo: "Redactly utilise le Regex haute vitesse pour les motifs courants (emails, IPs) et l'IA avancée pour les entités contextuelles comme les noms et adresses.",
+    patternDetection: "Détection de Motifs",
+    patternInfo: "Redactly utilise des règles explicites pour les motifs courants et des indices structurels pour le contexte.",
     ocrEngine: "Moteur OCR",
-    ocrInfo: "L'OCR Tesseract.js intégré vous permet d'extraire du texte directement à partir de captures d'écran ou de fenêtres partagées.",
+    ocrInfo: "L'OCR Tesseract.js intégré vous permet d'extraire du texte directement à partir de captures d'écran.",
     fileSupport: "Support de Fichiers",
-    fileInfo: "Importez des fichiers .txt, .log, .csv ou .json. Parfait pour anonymiser de grands ensembles de données ou des logs système.",
+    fileInfo: "Importez des fichiers .txt, .log, .csv ou .json. Parfait pour anonymiser de grands ensembles de données.",
     entityTypes: {
       NAME: "NOM",
       EMAIL: "EMAIL",
@@ -153,9 +159,16 @@ const appTranslations: Record<string, any> = {
       ADDRESS: "ADRESSE",
       IP_ADDRESS: "ADRESSE IP",
       CREDIT_CARD: "CARTE CRÉDIT",
+      DATE: "DATE",
+      GOVT_ID: "ID GOUV",
+      FINANCIAL: "FINANCIER",
+      AUTH: "AUTH",
+      EMPLOYMENT: "EMPLOI",
+      HEALTH: "SANTÉ",
+      OTHER: "AUTRE",
     },
     cookieTitle: "Cookies Simples (pas de “traceurs”)",
-    cookieContent: "Nous utilisons uniquement des cookies pour synchroniser vos cœurs, vos cerveaux et vos préférences dans l'écosystème Joisst. En cliquant ci-dessous, vous acceptez cette synchronisation sur toute la plateforme.",
+    cookieContent: "Nous utilisons uniquement des cookies pour synchroniser vos cœurs, vos cerveaux et vos préférences.",
     cookieButton: "Cool !",
     exportCleaned: "Exporter le Fichier Nettoyé",
     downloadTxt: "Télécharger en .txt",
@@ -165,16 +178,13 @@ const appTranslations: Record<string, any> = {
     clearAll: "Tout Effacer",
     downloadOriginal: "Télécharger Format Original",
     acceptedFormats: "Acceptés : .txt, .log, .csv, .json, .jpg, .png",
-    costsOneBrain: "Coûte 1 cerveau",
   },
   Deutsch: {
     sourceText: "Quelltext",
-    regexActive: "Regex Aktiv",
+    regexActive: "Regelbasierter Scan",
     characters: "Zeichen",
     placeholder: "Fügen Sie hier Ihre Protokolle, E-Mails oder Texte mit sensiblen Daten ein...",
-    regexInfo: "Regex scannt automatisch während der Eingabe. Nutzen Sie KI für fortgeschrittene Erkennung (Namen, Kontext).",
-    aiScanning: "KI-Scan läuft...",
-    advancedAiScan: "Erweiterter KI-Scan",
+    regexInfo: "Redactly scannt automatisch während der Eingabe mithilfe expliziter Regeln und Muster.",
     detectedEntities: "Erkannte Entitäten",
     redactAll: "Alles schwärzen",
     undoAll: "Alles rückgängig",
@@ -184,12 +194,12 @@ const appTranslations: Record<string, any> = {
     copy: "Kopieren",
     downloadImage: "Als Bild herunterladen",
     previewPlaceholder: "Vorschau wird hier angezeigt.",
-    hybridDetection: "Hybride Erkennung",
-    hybridInfo: "Redactly verwendet Hochgeschwindigkeits-Regex für gängige Muster (E-Mails, IPs) und fortgeschrittene KI für kontextsensitive Entitäten wie Namen und Adressen.",
+    patternDetection: "Mustererkennung",
+    patternInfo: "Redactly verwendet explizite Regeln für gängige Muster und strukturelle Hinweise für den Kontext.",
     ocrEngine: "OCR-Engine",
-    ocrInfo: "Integriertes Tesseract.js OCR ermöglicht es Ihnen, Text direkt aus Screenshots oder geteilten Fenstern zu extrahieren.",
+    ocrInfo: "Integriertes Tesseract.js OCR ermöglicht es Ihnen, Text direkt aus Screenshots zu extrahieren.",
     fileSupport: "Datei-Unterstützung",
-    fileInfo: "Importieren Sie .txt-, .log-, .csv- oder .json-Dateien. Perfekt zum Anonymisieren großer Datensätze oder Systemprotokolle.",
+    fileInfo: "Importieren Sie .txt-, .log-, .csv- oder .json-Dateien. Perfekt zum Anonymisieren großer Datensätze.",
     entityTypes: {
       NAME: "NAME",
       EMAIL: "EMAIL",
@@ -197,9 +207,16 @@ const appTranslations: Record<string, any> = {
       ADDRESS: "ADRESSE",
       IP_ADDRESS: "IP-ADRESSE",
       CREDIT_CARD: "KREDITKARTE",
+      DATE: "DATUM",
+      GOVT_ID: "STAATS-ID",
+      FINANCIAL: "FINANZEN",
+      AUTH: "AUTH",
+      EMPLOYMENT: "BESCHÄFTIGUNG",
+      HEALTH: "GESUNDHEIT",
+      OTHER: "ANDERE",
     },
     cookieTitle: "Einfache Cookies (keine „Tracker“)",
-    cookieContent: "Wir verwenden Cookies nur, um Ihre Herzen, Gehirne und Einstellungen im gesamten Joisst-Ökosystem zu synchronisieren. Mit einem Klick auf die Schaltfläche unten erklären Sie sich mit dieser plattformweiten Synchronisierung einverstanden.",
+    cookieContent: "Wir verwenden Cookies nur, um Ihre Herzen, Gehirne und Einstellungen zu synchronisieren.",
     cookieButton: "Cool!",
     exportCleaned: "Bereinigte Datei exportieren",
     downloadTxt: "Als .txt herunterladen",
@@ -209,7 +226,6 @@ const appTranslations: Record<string, any> = {
     clearAll: "Alles löschen",
     downloadOriginal: "Originalformat herunterladen",
     acceptedFormats: "Akzeptiert: .txt, .log, .csv, .json, .jpg, .png",
-    costsOneBrain: "Kostet 1 Gehirn",
   }
 };
 
@@ -218,7 +234,6 @@ export default function App() {
   const [inputText, setInputText] = useState('');
   const [entities, setEntities] = useState<DetectedEntity[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [redactionState, setRedactionState] = useState<RedactionState>({});
   const [showOriginal, setShowOriginal] = useState(false);
@@ -288,44 +303,6 @@ export default function App() {
     }
   }, [isDarkMode]);
 
-  const spendBrain = async () => {
-    if (user?.isGuest) {
-      if ((user.brains || 0) <= 0) {
-        window.location.href = 'https://api.joisst.com/login';
-        return false;
-      }
-      setUser((prev: any) => ({ ...prev, brains: prev.brains - 1 }));
-      return true;
-    }
-    try {
-      const res = await fetch('https://api.joisst.com/api/brains?action=spend', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ amount: 1 })
-      });
-
-      if (res.status === 401) {
-        window.location.href = 'https://api.joisst.com/login';
-        return false;
-      }
-      if (res.status === 400) {
-        window.location.href = 'https://api.joisst.com/hearts';
-        return false;
-      }
-      
-      if (res.ok) {
-        // Optimistic update
-        setUser((prev: any) => prev ? { ...prev, brains: Math.max(0, (prev.brains || 0) - 1) } : prev);
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error("Failed to spend brain:", err);
-      return false;
-    }
-  };
-
   const acceptCookies = async () => {
     try {
       await fetch('https://api.joisst.com/api/user?action=cookie_consent', {
@@ -341,23 +318,12 @@ export default function App() {
     }
   };
 
-  // Auto-scan with Regex whenever input changes (debounced)
+  // Auto-scan with Rules whenever input changes (debounced)
   useEffect(() => {
     const timer = setTimeout(() => {
       if (inputText.trim()) {
-        const regexEntities = detectSensitiveInfoRegex(inputText);
-        // Merge with existing AI entities if any
-        setEntities(prev => {
-          const aiEntities = prev.filter(e => e.source === 'AI');
-          // Filter out regex entities that might overlap or be duplicates
-          const newEntities = [...aiEntities];
-          regexEntities.forEach(re => {
-            if (!newEntities.some(e => e.text === re.text)) {
-              newEntities.push(re);
-            }
-          });
-          return newEntities;
-        });
+        const detected = detectSensitiveInfoRegex(inputText);
+        setEntities(detected);
       } else {
         setEntities([]);
       }
@@ -377,42 +343,6 @@ export default function App() {
       return newState;
     });
   }, [entities]);
-
-  const handleAiScan = async () => {
-    if (!inputText.trim()) return;
-    
-    setIsAiAnalyzing(true);
-    setError(null);
-    
-    try {
-      const success = await spendBrain();
-      if (!success) {
-        setError('Insufficient Brains. Please log in or get more brains.');
-        setIsAiAnalyzing(false);
-        return;
-      }
-
-      const aiDetected = await detectSensitiveInfoAI(inputText);
-      console.log("AI Detected Entities:", aiDetected);
-      if (aiDetected.length === 0) {
-        setError('AI Scan complete: No additional sensitive entities detected.');
-      }
-      setEntities(prev => {
-        const regexEntities = prev.filter(e => e.source === 'REGEX');
-        const combined = [...regexEntities];
-        aiDetected.forEach(ae => {
-          if (!combined.some(e => e.text === ae.text)) {
-            combined.push(ae);
-          }
-        });
-        return combined;
-      });
-    } catch (err) {
-      setError('AI Scan failed. Please try again.');
-    } finally {
-      setIsAiAnalyzing(false);
-    }
-  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -565,26 +495,50 @@ export default function App() {
   };
 
   const getEntityColor = (type: string) => {
-    switch (type) {
-      case 'NAME': return 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-800';
-      case 'EMAIL': return 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800';
-      case 'PHONE': return 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-800';
-      case 'ADDRESS': return 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-100 dark:border-purple-800';
-      case 'IP_ADDRESS': return 'bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-800';
-      case 'CREDIT_CARD': return 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-100 dark:border-orange-800';
-      default: return 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-300 border-slate-100 dark:border-slate-700';
+    if (isDarkMode) {
+      switch (type) {
+        case 'NAME': return 'bg-blue-900/30 text-blue-300 border-blue-800';
+        case 'EMAIL': return 'bg-emerald-900/30 text-emerald-300 border-emerald-800';
+        case 'PHONE': return 'bg-amber-900/30 text-amber-300 border-amber-800';
+        case 'ADDRESS': return 'bg-purple-900/30 text-purple-300 border-purple-800';
+        case 'IP_ADDRESS': return 'bg-rose-900/30 text-rose-300 border-rose-800';
+        case 'CREDIT_CARD': return 'bg-orange-900/30 text-orange-300 border-orange-800';
+        default: return 'bg-slate-800 text-slate-300 border-slate-700';
+      }
+    } else {
+      switch (type) {
+        case 'NAME': return 'bg-blue-50/80 text-blue-800 border-blue-200';
+        case 'EMAIL': return 'bg-emerald-50/80 text-emerald-800 border-emerald-200';
+        case 'PHONE': return 'bg-amber-50/80 text-amber-800 border-amber-200';
+        case 'ADDRESS': return 'bg-purple-50/80 text-purple-800 border-purple-200';
+        case 'IP_ADDRESS': return 'bg-rose-50/80 text-rose-800 border-rose-200';
+        case 'CREDIT_CARD': return 'bg-orange-50/80 text-orange-800 border-orange-200';
+        default: return 'bg-slate-50/80 text-black border-slate-200';
+      }
     }
   };
 
   const getEntityHighlightColor = (type: string) => {
-    switch (type) {
-      case 'NAME': return 'bg-blue-100/40 dark:bg-blue-900/50 border-blue-200 dark:border-blue-700';
-      case 'EMAIL': return 'bg-emerald-100/40 dark:bg-emerald-900/50 border-emerald-200 dark:border-emerald-700';
-      case 'PHONE': return 'bg-amber-100/40 dark:bg-amber-900/50 border-amber-200 dark:border-amber-700';
-      case 'ADDRESS': return 'bg-purple-100/40 dark:bg-purple-900/50 border-purple-200 dark:border-purple-700';
-      case 'IP_ADDRESS': return 'bg-rose-100/40 dark:bg-rose-900/50 border-rose-200 dark:border-rose-700';
-      case 'CREDIT_CARD': return 'bg-orange-100/40 dark:bg-orange-900/50 border-orange-200 dark:border-orange-700';
-      default: return 'bg-slate-100/40 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700';
+    if (isDarkMode) {
+      switch (type) {
+        case 'NAME': return 'bg-blue-900/50 border-blue-700';
+        case 'EMAIL': return 'bg-emerald-900/50 border-emerald-700';
+        case 'PHONE': return 'bg-amber-900/50 border-amber-700';
+        case 'ADDRESS': return 'bg-purple-900/50 border-purple-700';
+        case 'IP_ADDRESS': return 'bg-rose-900/50 border-rose-700';
+        case 'CREDIT_CARD': return 'bg-orange-900/50 border-orange-700';
+        default: return 'bg-slate-800/50 border-slate-700';
+      }
+    } else {
+      switch (type) {
+        case 'NAME': return 'bg-blue-100/40 border-blue-200';
+        case 'EMAIL': return 'bg-emerald-100/40 border-emerald-200';
+        case 'PHONE': return 'bg-amber-100/40 border-amber-200';
+        case 'ADDRESS': return 'bg-purple-100/40 border-purple-200';
+        case 'IP_ADDRESS': return 'bg-rose-100/40 border-rose-200';
+        case 'CREDIT_CARD': return 'bg-orange-100/40 border-orange-200';
+        default: return 'bg-slate-100/40 border-slate-200';
+      }
     }
   };
 
@@ -781,9 +735,14 @@ export default function App() {
                   </button>
 
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-900/30">
-                      <Check className="w-3 h-3" />
-                      {t.regexActive}
+                    <div className={cn(
+                      "flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full border transition-all",
+                      isAnalyzing
+                        ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-900/30"
+                        : "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-900/30"
+                    )}>
+                      {isAnalyzing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
+                      {isAnalyzing ? "Scanning..." : t.regexActive}
                     </div>
                     <div className="text-[11px] font-mono text-slate-600 dark:text-slate-500">
                       {inputText.length} {t.characters}
@@ -796,7 +755,10 @@ export default function App() {
                 {/* Highlight Layer */}
                 <div 
                   id="highlight-layer"
-                  className="absolute inset-0 p-6 text-slate-900 dark:text-slate-100 font-mono text-sm leading-relaxed overflow-y-auto pointer-events-none"
+                  className={cn(
+                    "absolute inset-0 p-6 font-mono text-sm leading-relaxed overflow-y-auto pointer-events-none",
+                    isDarkMode ? "text-slate-100" : "text-black"
+                  )}
                   style={{ color: 'transparent' }}
                 >
                   {renderHighlightedText()}
@@ -808,7 +770,10 @@ export default function App() {
                   onChange={(e) => setInputText(e.target.value)}
                   onScroll={handleScroll}
                   placeholder={t.placeholder}
-                  className="absolute inset-0 w-full h-full p-6 resize-none focus:outline-none text-slate-900 dark:text-slate-100 font-mono text-sm leading-relaxed placeholder:text-slate-300 dark:placeholder:text-slate-700 bg-transparent caret-indigo-600"
+                  className={cn(
+                    "absolute inset-0 w-full h-full p-6 resize-none focus:outline-none font-mono text-sm leading-relaxed bg-transparent caret-indigo-600",
+                    isDarkMode ? "text-slate-100 placeholder:text-slate-700" : "text-black placeholder:text-slate-400"
+                  )}
                   spellCheck={false}
                 />
               </div>
@@ -824,34 +789,7 @@ export default function App() {
                   )}>
                     {t.regexInfo}
                   </div>
-                  <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mt-1">
-                    {t.costsOneBrain}
-                  </div>
                 </div>
-                <button
-                  onClick={handleAiScan}
-                  disabled={isAiAnalyzing || !inputText.trim()}
-                  className={cn(
-                    "px-6 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all shadow-sm",
-                    !inputText.trim() 
-                      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed" 
-                      : isAiAnalyzing
-                        ? "bg-indigo-600 text-white cursor-wait"
-                        : "bg-[#7C3AED] text-white hover:bg-[#6D28D9] active:scale-95"
-                  )}
-                >
-                  {isAiAnalyzing ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin text-white" />
-                      {t.aiScanning}
-                    </>
-                  ) : (
-                    <>
-                      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4"><path d="m491.9 288.1c48.1-57 2.4-117.4-63.7-177.5-7.8 27.4-29.8 48.4-57.5 55-5.2-.1-9.4-4.3-9.4-9.6 0-4.1 2.7-7.7 6.6-8.9 23.1-7 40.2-26.4 44.3-50.1-25.6-22-55.3-38.6-87.4-49.1-27.7 24.3-58.2 61.8-31.9 113.3 2.4 4.6.7 10.3-4 12.8-4.5 2.4-10.1.7-12.6-3.7-28.9-56.1-2.7-97 26.8-128.2-60.8-11.6-123.8-1.4-177.9 28.7 22.4 1.2 43.5 11.1 58.8 27.5 3.8 3.6 3.9 9.6.2 13.4-3.6 3.8-9.6 3.9-13.4.2 0 0-.1-.1-.1-.1-37.7-40.2-94.2-20.6-117.1 24.2-30.5 54.7-5.9 84.6 33.9 91.8 5.2.7 8.8 5.5 8 10.7-.7 5.1-5.5 8.7-10.6 8-1.7-.2-41.6-6.1-57.6-37.4-1.4-2.7-2.6-5.5-3.5-8.4-33.4 42.3-31.2 75.3 5.5 113.8 10.2 11.4 25.8 16.3 40.6 12.6 29.8-7.5 70.1-24.2 78.4-45.7 7.6-18.9-8.8-20.8 3.6-31.5 16.2-7.3 21.3 20.4 14.2 38.1-6.5 18.3-31.7 36-53.9 44.6 5.1 16.1 15.9 29.7 30.3 38.5 30 18.6 70.1 14.8 87.1 10.2 4.6-1.3 9.6-.2 13.3 2.9 11.3 9.7 24.7 16.5 39.2 19.9 6.2 1.1 11.7 4.5 15.4 9.6l39.5 56.7c1.8 2.5 4.7 4.1 7.8 4.1h33.1c5.2 0 9.5-4.2 9.5-9.5v-38.6c79.3-18.8 131.1-56.1 102.8-127.2-1.8-3.7-1.1-8.1 1.7-11.1zm-91.9-64.5 38.6-8.8c5.1-1.1 10.2 2.2 11.2 7.3 1.1 5-2 9.9-7 11.2l-38.6 8.8c-.7.2-1.4.2-2.1.2-5.2-.1-9.4-4.3-9.4-9.6.1-4.4 3.1-8.1 7.3-9.1zm-73.5 49.4c10-18.4 19.8-58.1-10-70.6-4.7-2.3-6.7-8-4.4-12.7 11.8-17.8 39.8 16.5 41.2 28.4 6.7 23.3-3.1 49.5-9.6 62.8 21.3 14.7 36.8 36.2 44.2 60.9 1.8 4.9-.8 10.4-5.7 12.2s-10.4-.8-12.2-5.7v-.1c-24.7-74.3-84.8-67.3-122.4-44.7-4.5 2.7-10.3 1.3-13.1-3.2-2.6-4.3-1.3-10 2.8-12.8 2-1.1 45.9-28.6 89.2-14.5zm-169.6-75.4c-9.5-1-39.1-.9-34.7-17.5 1.7-4.9 7.1-7.5 12-5.8 24.3 11.3 53.1.7 64.4-23.6 1.1-2.5 2.1-5 2.8-7.7 1.7-5 7.1-7.7 12-6 4.8 1.6 7.5 6.6 6.2 11.5-3.4 10.1-8.8 19.4-15.7 27.5 2.1 9.2 7.1 17.4 14.3 23.4 8.3 5.6 18.5 7.6 28.2 5.3 5.2-.8 10 2.7 10.9 7.8.8 5.2-2.7 10-7.9 10.9-26.1 5.4-52.3-9.2-61.2-34.4-9.3 5.8-20.2 8.8-31.3 8.6z" fill="currentColor"/></svg>
-                      {t.advancedAiScan}
-                    </>
-                  )}
-                </button>
               </div>
             </div>
 
@@ -920,8 +858,8 @@ export default function App() {
                       className={cn(
                         "group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer",
                         redactionState[entity.text] 
-                          ? "bg-slate-50/50 dark:bg-slate-800 border-slate-200 dark:border-slate-700" 
-                          : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700"
+                          ? (isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200")
+                          : (isDarkMode ? "bg-slate-900 border-slate-800 hover:border-slate-700" : "bg-white border-slate-100 hover:border-slate-200")
                       )}
                       onClick={() => toggleRedaction(entity.text)}
                     >
@@ -934,10 +872,7 @@ export default function App() {
                             {t.entityTypes[entity.type] || entity.type}
                           </span>
                           <span className={cn(
-                            "text-[9px] font-mono px-1 rounded",
-                            entity.source === 'AI' 
-                              ? "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 dark:text-indigo-400" 
-                              : "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 dark:text-emerald-400"
+                            "text-[9px] font-mono px-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
                           )}>
                             {entity.source}
                           </span>
@@ -1081,9 +1016,9 @@ export default function App() {
             <h3 className={cn(
               "text-xs font-bold uppercase tracking-widest",
               isDarkMode ? "text-slate-500" : "text-slate-900"
-            )}>{t.hybridDetection}</h3>
+            )}>{t.patternDetection}</h3>
             <p className="text-sm leading-relaxed">
-              {t.hybridInfo}
+              {t.patternInfo}
             </p>
           </div>
           <div className="space-y-3">

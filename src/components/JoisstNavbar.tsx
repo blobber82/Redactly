@@ -209,11 +209,6 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
               <CurrencyButton icon={Heart} value={user?.hearts?.toString() || "0"} color="#F43E5D" />
             </div>
 
-            {/* 2. Brain Counter */}
-            <div className="hidden sm:flex items-center">
-              <CurrencyButton value={user?.brains?.toString() || "0"} color="#7C3AED" customIcon={<BrainIcon />} />
-            </div>
-
             {/* 3. Language selector */}
             <div className="relative">
               <button
@@ -265,7 +260,10 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             {/* 7. Profile icon */}
             <a 
               href={appendRef("https://api.joisst.com/dashboard")}
-              className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-white dark:bg-slate-800 overflow-hidden"
+              className={cn(
+                "group w-10 h-10 sm:w-14 sm:h-14 rounded-full border flex items-center justify-center transition-all duration-200 hover:border-[#d90168] overflow-hidden",
+                isDarkMode ? "bg-slate-800 border-slate-800" : "bg-white! border-slate-200"
+              )}
             >
               <UserIcon className={cn("w-6 h-6 sm:w-8 sm:h-8 transition-colors", isDarkMode ? "text-slate-400" : "text-slate-900 group-hover:text-[#d90168]")} />
             </a>
