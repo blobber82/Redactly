@@ -150,7 +150,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
         className
       )}
     >
-      <div className="text-slate-500 group-hover:text-[#d90168] transition-colors duration-200">
+      <div className={cn("transition-colors duration-200", isDarkMode ? "text-white" : "text-slate-900 group-hover:text-[#d90168]")}>
         {children}
       </div>
     </button>
@@ -173,8 +173,8 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
 
   return (
     <nav className={cn(
-      "sticky top-0 z-50 transition-all duration-300 backdrop-blur-xl bg-white dark:bg-slate-900/90 border-b",
-      isDarkMode ? "border-slate-800" : "border-slate-100",
+      "sticky top-0 z-50 transition-all duration-300 backdrop-blur-xl border-b",
+      isDarkMode ? "bg-slate-900/90 border-slate-800" : "bg-white border-slate-100",
       isPwaActive ? "h-24 sm:h-40" : "h-16 sm:h-28"
     )}>
       <div className="max-w-7xl mx-auto h-full px-2 sm:px-6 flex flex-col justify-center">
@@ -189,10 +189,13 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             </a>
             
             <div className="hidden md:flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4 text-slate-900 dark:text-white" />
+              <ArrowLeft className={cn("w-4 h-4", isDarkMode ? "text-white" : "text-slate-900")} />
               <a 
                 href={appendRef("https://joisst.com")}
-                className="font-black text-sm uppercase tracking-[0.15em] text-slate-900 dark:text-white hover:text-[#d90168] transition-colors"
+                className={cn(
+                  "font-black text-sm uppercase tracking-[0.15em] transition-colors hover:text-[#d90168]",
+                  isDarkMode ? "text-white" : "text-slate-900"
+                )}
               >
                 {t.moreApps}
               </a>
@@ -218,7 +221,7 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
                 className="group flex items-center gap-2 px-3 sm:px-4 h-10 sm:h-14 rounded-xl border border-slate-200 dark:border-slate-800 transition-all duration-200 hover:border-[#d90168]"
               >
                 {currentFlag}
-                <ChevronDown className="w-4 h-4 text-slate-500 group-hover:text-[#d90168] transition-colors" />
+                <ChevronDown className={cn("w-4 h-4 transition-colors", isDarkMode ? "text-slate-400" : "text-slate-900 group-hover:text-[#d90168]")} />
               </button>
               
               <AnimatePresence>
@@ -262,9 +265,9 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             {/* 7. Profile icon */}
             <a 
               href={appendRef("https://api.joisst.com/dashboard")}
-              className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-slate-100 dark:bg-slate-800 overflow-hidden"
+              className="group w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center transition-all duration-200 hover:border-[#d90168] bg-white dark:bg-slate-800 overflow-hidden"
             >
-              <UserIcon className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 group-hover:text-[#d90168] transition-colors" />
+              <UserIcon className={cn("w-6 h-6 sm:w-8 sm:h-8 transition-colors", isDarkMode ? "text-slate-400" : "text-slate-900 group-hover:text-[#d90168]")} />
             </a>
           </div>
         </div>
@@ -279,7 +282,10 @@ export const JoisstNavbar: React.FC<JoisstNavbarProps> = ({ onBack, onClear, onU
             >
               <button className="px-6 py-2 rounded-full bg-white/90 shadow-lg shadow-black/5 flex items-center gap-2 border border-slate-100">
                 <PlusCircle className="w-4 h-4 text-[#d90168]" />
-                <span className="text-[11px] sm:text-[13px] font-black uppercase tracking-[0.25em] text-slate-900">
+                <span className={cn(
+                  "text-[11px] sm:text-[13px] font-black uppercase tracking-[0.25em]",
+                  isDarkMode ? "text-slate-400" : "text-slate-900"
+                )}>
                   {t.install}
                 </span>
               </button>

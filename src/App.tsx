@@ -566,25 +566,25 @@ export default function App() {
 
   const getEntityColor = (type: string) => {
     switch (type) {
-      case 'NAME': return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
-      case 'EMAIL': return 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
-      case 'PHONE': return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
-      case 'ADDRESS': return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800';
-      case 'IP_ADDRESS': return 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
-      case 'CREDIT_CARD': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
-      default: return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+      case 'NAME': return 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-800';
+      case 'EMAIL': return 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800';
+      case 'PHONE': return 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-800';
+      case 'ADDRESS': return 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-100 dark:border-purple-800';
+      case 'IP_ADDRESS': return 'bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-800';
+      case 'CREDIT_CARD': return 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-100 dark:border-orange-800';
+      default: return 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-300 border-slate-100 dark:border-slate-700';
     }
   };
 
   const getEntityHighlightColor = (type: string) => {
     switch (type) {
-      case 'NAME': return 'bg-blue-200/50 dark:bg-blue-900/50 border-blue-300 dark:border-blue-700';
-      case 'EMAIL': return 'bg-emerald-200/50 dark:bg-emerald-900/50 border-emerald-300 dark:border-emerald-700';
-      case 'PHONE': return 'bg-amber-200/50 dark:bg-amber-900/50 border-amber-300 dark:border-amber-700';
-      case 'ADDRESS': return 'bg-purple-200/50 dark:bg-purple-900/50 border-purple-300 dark:border-purple-700';
-      case 'IP_ADDRESS': return 'bg-rose-200/50 dark:bg-rose-900/50 border-rose-300 dark:border-rose-700';
-      case 'CREDIT_CARD': return 'bg-orange-200/50 dark:bg-orange-900/50 border-orange-300 dark:border-orange-700';
-      default: return 'bg-slate-200/50 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700';
+      case 'NAME': return 'bg-blue-100/40 dark:bg-blue-900/50 border-blue-200 dark:border-blue-700';
+      case 'EMAIL': return 'bg-emerald-100/40 dark:bg-emerald-900/50 border-emerald-200 dark:border-emerald-700';
+      case 'PHONE': return 'bg-amber-100/40 dark:bg-amber-900/50 border-amber-200 dark:border-amber-700';
+      case 'ADDRESS': return 'bg-purple-100/40 dark:bg-purple-900/50 border-purple-200 dark:border-purple-700';
+      case 'IP_ADDRESS': return 'bg-rose-100/40 dark:bg-rose-900/50 border-rose-200 dark:border-rose-700';
+      case 'CREDIT_CARD': return 'bg-orange-100/40 dark:bg-orange-900/50 border-orange-200 dark:border-orange-700';
+      default: return 'bg-slate-100/40 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700';
     }
   };
 
@@ -671,7 +671,7 @@ export default function App() {
 
   return (
     <div className={cn("min-h-screen transition-colors duration-300 font-sans selection:bg-indigo-100", isDarkMode && "dark")}>
-      <div className={cn("min-h-screen", isDarkMode ? "bg-slate-950 text-white" : "bg-white text-slate-900")}>
+      <div className={cn("min-h-screen", isDarkMode ? "bg-slate-950 text-white" : "bg-slate-50 text-slate-900")}>
         <JoisstNavbar 
         onUpload={() => fileInputRef.current?.click()} 
         onClear={clearAll} 
@@ -720,8 +720,14 @@ export default function App() {
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-black text-black dark:text-white tracking-tighter uppercase leading-none">Redactly</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Professional Redaction Tool</p>
+            <h1 className={cn(
+              "text-2xl font-black tracking-tighter uppercase leading-none",
+              isDarkMode ? "text-white" : "text-slate-900"
+            )}>Redactly</h1>
+            <p className={cn(
+              "text-xs font-bold uppercase tracking-widest mt-1",
+              isDarkMode ? "text-slate-400" : "text-slate-500"
+            )}>Professional Redaction Tool</p>
           </div>
         </div>
 
@@ -729,11 +735,20 @@ export default function App() {
           
           {/* Left Column: Input */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[600px]">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-800/50">
+            <div className={cn(
+              "rounded-2xl border shadow-sm overflow-hidden flex flex-col h-[600px]",
+              isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+            )}>
+              <div className={cn(
+                "px-6 py-4 border-b flex items-center justify-between",
+                isDarkMode ? "bg-slate-800/50 border-slate-800" : "bg-white border-slate-100"
+              )}>
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-slate-400" />
-                  <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.sourceText}</h2>
+                  <h2 className={cn(
+                    "text-sm font-semibold uppercase tracking-wider",
+                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                  )}>{t.sourceText}</h2>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="relative group">
@@ -770,7 +785,7 @@ export default function App() {
                       <Check className="w-3 h-3" />
                       {t.regexActive}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
+                    <div className="text-[11px] font-mono text-slate-600 dark:text-slate-500">
                       {inputText.length} {t.characters}
                     </div>
                   </div>
@@ -781,7 +796,7 @@ export default function App() {
                 {/* Highlight Layer */}
                 <div 
                   id="highlight-layer"
-                  className="absolute inset-0 p-6 text-slate-800 dark:text-slate-100 font-mono text-sm leading-relaxed overflow-y-auto pointer-events-none"
+                  className="absolute inset-0 p-6 text-slate-900 dark:text-slate-100 font-mono text-sm leading-relaxed overflow-y-auto pointer-events-none"
                   style={{ color: 'transparent' }}
                 >
                   {renderHighlightedText()}
@@ -793,14 +808,20 @@ export default function App() {
                   onChange={(e) => setInputText(e.target.value)}
                   onScroll={handleScroll}
                   placeholder={t.placeholder}
-                  className="absolute inset-0 w-full h-full p-6 resize-none focus:outline-none text-slate-800 dark:text-slate-100 font-mono text-sm leading-relaxed placeholder:text-slate-300 dark:placeholder:text-slate-700 bg-transparent caret-indigo-600"
+                  className="absolute inset-0 w-full h-full p-6 resize-none focus:outline-none text-slate-900 dark:text-slate-100 font-mono text-sm leading-relaxed placeholder:text-slate-300 dark:placeholder:text-slate-700 bg-transparent caret-indigo-600"
                   spellCheck={false}
                 />
               </div>
               
-              <div className="p-4 bg-white dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <div className={cn(
+                "p-4 border-t flex justify-between items-center",
+                isDarkMode ? "bg-slate-800/50 border-slate-800" : "bg-white border-slate-100"
+              )}>
                 <div className="flex flex-col">
-                  <div className="text-sm text-slate-400 dark:text-slate-500 max-w-[300px]">
+                  <div className={cn(
+                    "text-sm max-w-[300px]",
+                    isDarkMode ? "text-slate-500" : "text-slate-600"
+                  )}>
                     {t.regexInfo}
                   </div>
                   <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mt-1">
@@ -849,11 +870,20 @@ export default function App() {
           {/* Right Column: Analysis & Results */}
           <div className="lg:col-span-5 space-y-6">
             {/* Detected Entities */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col max-h-[400px]">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-800/50">
+            <div className={cn(
+              "rounded-2xl border shadow-sm overflow-hidden flex flex-col max-h-[400px]",
+              isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+            )}>
+              <div className={cn(
+                "px-6 py-4 border-b flex items-center justify-between",
+                isDarkMode ? "bg-slate-800/50 border-slate-800" : "bg-white border-slate-100"
+              )}>
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-indigo-500" />
-                  <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.detectedEntities}</h2>
+                  <h2 className={cn(
+                    "text-sm font-semibold uppercase tracking-wider",
+                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                  )}>{t.detectedEntities}</h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
@@ -874,7 +904,10 @@ export default function App() {
 
               <div className="flex-1 overflow-y-auto p-4 space-y-2">
                 {entities.length === 0 ? (
-                  <div className="h-32 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 space-y-2">
+                  <div className={cn(
+                    "h-32 flex flex-col items-center justify-center space-y-2",
+                    isDarkMode ? "text-slate-500" : "text-slate-600"
+                  )}>
                     <Search className="w-8 h-8 opacity-20" />
                     <p className="text-sm italic">{t.noEntities}</p>
                   </div>
@@ -912,8 +945,8 @@ export default function App() {
                         <span className={cn(
                           "text-sm font-mono truncate",
                           redactionState[entity.text] 
-                            ? "text-slate-400 dark:text-slate-600 line-through" 
-                            : "text-slate-700 dark:text-slate-200"
+                            ? (isDarkMode ? "text-slate-600" : "text-slate-400 line-through")
+                            : (isDarkMode ? "text-slate-200" : "text-slate-900")
                         )}>
                           {entity.text}
                         </span>
@@ -935,11 +968,20 @@ export default function App() {
             </div>
 
             {/* Output Preview */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[450px]">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-800/50">
+            <div className={cn(
+              "rounded-2xl border shadow-sm overflow-hidden flex flex-col h-[450px]",
+              isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+            )}>
+              <div className={cn(
+                "px-6 py-4 border-b flex items-center justify-between",
+                isDarkMode ? "bg-slate-800/50 border-slate-800" : "bg-white border-slate-100"
+              )}>
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-slate-400" />
-                  <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t.redactedPreview}</h2>
+                  <h2 className={cn(
+                    "text-sm font-semibold uppercase tracking-wider",
+                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                  )}>{t.redactedPreview}</h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="relative">
@@ -984,16 +1026,19 @@ export default function App() {
                 </div>
               </div>
 
-              <div 
-                ref={resultRef}
-                className="flex-1 p-6 overflow-y-auto bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-300 font-mono text-sm leading-relaxed"
-              >
+                <div className={cn(
+                  "flex-1 p-6 overflow-y-auto font-mono text-sm leading-relaxed",
+                  isDarkMode ? "bg-slate-900 text-slate-300" : "bg-white text-slate-900"
+                )}>
                 {inputText ? (
                   <div className="whitespace-pre-wrap">
                     {showOriginal ? inputText : redactedText}
                   </div>
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 space-y-2">
+                  <div className={cn(
+                    "h-full flex flex-col items-center justify-center space-y-2",
+                    isDarkMode ? "text-slate-500" : "text-slate-600"
+                  )}>
                     <FileText className="w-8 h-8 opacity-20" />
                     <p className="text-sm italic">{t.previewPlaceholder}</p>
                   </div>
@@ -1001,7 +1046,10 @@ export default function App() {
               </div>
 
               {/* Primary Actions */}
-              <div className="p-4 bg-white dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
+              <div className={cn(
+                "p-4 border-t",
+                isDarkMode ? "bg-slate-800/50 border-slate-800" : "bg-white border-slate-100"
+              )}>
                 <button
                   onClick={handleCopy}
                   disabled={!inputText}
@@ -1021,22 +1069,37 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-4 py-12 border-t border-slate-200 dark:border-slate-800 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-500 dark:text-slate-400">
+      <footer className={cn(
+        "max-w-7xl mx-auto px-4 py-12 border-t mt-12",
+        isDarkMode ? "border-slate-800" : "border-slate-200"
+      )}>
+        <div className={cn(
+          "grid grid-cols-1 md:grid-cols-3 gap-8",
+          isDarkMode ? "text-slate-400" : "text-slate-700"
+        )}>
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">{t.hybridDetection}</h3>
+            <h3 className={cn(
+              "text-xs font-bold uppercase tracking-widest",
+              isDarkMode ? "text-slate-500" : "text-slate-900"
+            )}>{t.hybridDetection}</h3>
             <p className="text-sm leading-relaxed">
               {t.hybridInfo}
             </p>
           </div>
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">{t.ocrEngine}</h3>
+            <h3 className={cn(
+              "text-xs font-bold uppercase tracking-widest",
+              isDarkMode ? "text-slate-500" : "text-slate-900"
+            )}>{t.ocrEngine}</h3>
             <p className="text-sm leading-relaxed">
               {t.ocrInfo}
             </p>
           </div>
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">{t.fileSupport}</h3>
+            <h3 className={cn(
+              "text-xs font-bold uppercase tracking-widest",
+              isDarkMode ? "text-slate-500" : "text-slate-900"
+            )}>{t.fileSupport}</h3>
             <p className="text-sm leading-relaxed">
               {t.fileInfo}
             </p>
@@ -1045,42 +1108,47 @@ export default function App() {
       </footer>
 
       {/* Cookie Consent Modal */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {!cookieConsent && (
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 sm:p-6 bg-slate-900/40 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            className="fixed bottom-0 left-0 right-0 z-[100] p-4 sm:p-8 pointer-events-none"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+              className={cn(
+                "w-full max-w-4xl mx-auto rounded-2xl shadow-[0_-20px_80px_-20px_rgba(0,0,0,0.15)] border overflow-hidden pointer-events-auto",
+                isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+              )}
             >
-              <div className="p-8 space-y-6">
+              <div className="p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#d90168]/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-[#d90168]/10 flex items-center justify-center shrink-0">
                     <ShieldAlert className="w-6 h-6 text-[#d90168]" />
                   </div>
-                  <h2 className="text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
-                    {t.cookieTitle}
-                  </h2>
+                  <div className="space-y-1">
+                    <h2 className={cn(
+                      "text-lg font-black uppercase tracking-tight",
+                      isDarkMode ? "text-white" : "text-slate-900"
+                    )}>
+                      {t.cookieTitle}
+                    </h2>
+                    <p className={cn(
+                      "text-sm leading-relaxed max-w-2xl",
+                      isDarkMode ? "text-slate-400" : "text-slate-600"
+                    )}>
+                      {t.cookieContent}
+                    </p>
+                  </div>
                 </div>
-                
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {t.cookieContent}
-                </p>
 
-                <div className="flex justify-end">
-                  <button
-                    onClick={acceptCookies}
-                    className="px-10 py-4 bg-[#d90168] text-white font-black uppercase tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#d90168]/20"
-                  >
-                    {t.cookieButton}
-                  </button>
-                </div>
+                <button
+                  onClick={acceptCookies}
+                  className="w-full sm:w-auto px-10 py-4 bg-[#d90168] text-white font-black uppercase tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#d90168]/20 shrink-0"
+                >
+                  {t.cookieButton}
+                </button>
               </div>
             </motion.div>
           </motion.div>

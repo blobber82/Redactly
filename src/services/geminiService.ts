@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 
 const getAI = () => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
@@ -83,7 +83,7 @@ export async function detectSensitiveInfoAI(text: string): Promise<DetectedEntit
       3. Be highly sensitive to context. If a word looks like a name in context, flag it as NAME.
       4. Return ONLY a JSON array of objects.`,
         responseMimeType: "application/json",
-        thinkingConfig: { thinkingLevel: "HIGH" },
+        thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH },
         responseSchema: {
           type: Type.ARRAY,
           items: {
